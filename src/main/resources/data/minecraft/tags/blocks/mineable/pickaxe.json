@@ -1,0 +1,33 @@
+{
+    "replace":  false,
+    "values":  [
+                   "rwbym:bait",
+                   "rwbym:crush",
+                   "rwbym:crusher",
+                   "rwbym:fireblock",
+                   "rwbym:fireore",
+                   "rwbym:fluidgrimm",
+                   "rwbym:forestironblock",
+                   "rwbym:frostedironblock",
+                   "rwbym:gildedironblock",
+                   "rwbym:gravityblock",
+                   "rwbym:gravityore",
+                   "rwbym:hrdltfence",
+                   "rwbym:iceblock",
+                   "rwbym:iceore",
+                   "rwbym:impureblock",
+                   "rwbym:impureore",
+                   "rwbym:lantern",
+                   "rwbym:lightblock",
+                   "rwbym:lightore",
+                   "rwbym:roseironblock",
+                   "rwbym:shadowironblock",
+                   "rwbym:smrgrave",
+                   "rwbym:toolkit",
+                   "rwbym:viridianironblock",
+                   "rwbym:waterblock",
+                   "rwbym:waterore",
+                   "rwbym:windblock",
+                   "rwbym:windore"
+               ]
+}

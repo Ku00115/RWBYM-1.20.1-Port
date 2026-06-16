@@ -1,0 +1,53 @@
+{
+    "submodels": [
+        {
+            "model": "this:charging bolt",
+            "predicates": {
+                "charge_handle": [
+                    {
+                        "value": "variable",
+                        "order": 0,
+                        "transformation": {
+                            "translation": [-0.036, 0, 0]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "model": "this:magazine",
+            "predicates": {
+                "mag": [
+                    {
+                        "value": 0,
+                        "transformation": {
+                            "scale": [0, 0, 0]
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "basetransformation": {
+        "predicates": {
+            "ads": {
+                "FIRST_PERSON_LEFT_HAND": [
+                    {
+                        "value": "variable",
+                        "transformation": {
+                            "translation": [0.05, 0, 0.16]
+                        }
+                    }
+                ],
+                "FIRST_PERSON_RIGHT_HAND": [
+                    {
+                        "value": "variable",
+                        "transformation": {
+                            "translation": [0.05, 0, -0.15]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

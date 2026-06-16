@@ -1,0 +1,121 @@
+{
+    "submodels": [
+        {
+            "model": "this:bolt",
+            "predicates": {
+                "boltup": [
+                    {
+                        "value": "variable",
+                        "order": 0,
+                        "transformation": {
+                            "translation": [0, 0, 0],
+                            "rotation": [-22.5, 0, 0],
+                            "center": [0, 0.05534375, 0.005725]
+                        }
+                    }
+                ],
+                "boltback": [
+                    {
+                        "value": "variable",
+                        "order": 1,
+                        "transformation": {
+                            "translation": [-0.0625, 0, 0]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "model": "this:magazine",
+            "predicates": {
+                "mag": [
+                    {
+                        "value": 0,
+                        "transformation": {
+                            "scale": [0, 0, 0]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "model": "rwbym:item/50bmg",
+            "predicates": {
+                "chambered": [
+                    {
+                        "value": "default",
+                        "transformation": {
+                            "scale": [0, 0, 0]
+                        }
+                    },
+                    {
+                        "value": 1,
+                        "order": 1,
+                        "transformation": {
+                            "scale": [1, 1, 1],
+                            "translation": [0, 0, -0.06]
+                        }
+                    }
+                ],
+                "boltback": [
+                    {
+                        "value": "variable",
+                        "order": 2,
+                        "transformation": {
+                            "translation": [0, 0, 0.03]
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "basetransformation": {
+        "predicates": {
+            "ads": {
+                "FIRST_PERSON_LEFT_HAND": [
+                    {
+                        "value": "variable",
+                        "transformation": {
+                            "translation": [0.3125, -0.026, 0.2495]
+                        }
+                    },
+                    {
+                        "value": {
+                            "min": 0.5,
+                            "max": 1,
+                            "scale": true,
+                            "local": false
+                        },
+                        "transformation": {
+                            "_translation": [1, -4.325, 3.7125],
+                            "__translation": [1, -4.34, -7.235],
+                            "translation": [-1, -4.34, -7.235],
+                            "scale": [1, 30, 30]
+                        }
+                    }
+                ],
+                "FIRST_PERSON_RIGHT_HAND": [
+                    {
+                        "value": "variable",
+                        "transformation": {
+                            "translation": [-0.3125, -0.026, -0.2495]
+                        }
+                    },
+                    {
+                        "value": {
+                            "min": 0.5,
+                            "max": 1,
+                            "scale": true,
+                            "local": false
+                        },
+                        "transformation": {
+                            "_translation": [1, -4.325, 3.7125],
+                            "translation": [1, -4.34, 7.235],
+                            "scale": [1, 30, 30]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

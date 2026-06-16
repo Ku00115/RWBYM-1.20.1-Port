@@ -1,0 +1,56 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"8": "rwbym:block/hrdltfence"
+	},
+	"elements": [
+		{
+			"name": "hexadecagon",
+			"from": [7.875, 0, 0],
+			"to": [8.125, 12.625, 8],
+			"faces": {
+				"east": {"uv": [8, 3.375, 16, 16], "texture": "#8"},
+				"west": {"uv": [8, 3.375, 16, 16], "texture": "#8"}
+			}
+		},
+		{
+			"name": "hexadecagon",
+			"from": [7.875, 12.625, 0],
+			"to": [8.125, 16.625, 8],
+			"faces": {
+				"east": {"uv": [8, 10.75, 16, 14.75], "texture": "#8"},
+				"west": {"uv": [8, 10.75, 16, 14.75], "texture": "#8"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "hardlightshieldposttop",
+			"origin": [8, 8, 8],
+			"children": [
+				{
+					"name": "group",
+					"origin": [8.0013, 15.5, 7.9987],
+					"children": []
+				}
+			]
+		},
+		{
+			"name": "hrdltfence_side_top",
+			"origin": [8, 8, 8],
+			"children": [
+				{
+					"name": "hardlightshieldposttop",
+					"origin": [8, 8, 8],
+					"children": [
+						{
+							"name": "group",
+							"origin": [8.0013, 15.5, 7.9987],
+							"children": [0, 1]
+						}
+					]
+				}
+			]
+		}
+	]
+}

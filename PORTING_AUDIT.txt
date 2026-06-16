@@ -1,0 +1,20 @@
+RegisteredItems=841 WeaponProfiles=239 MissingItemModels=0 ArmorItems=151 MissingArmorTextures=0 WeaponLikeWithoutProfile=15 ProfilesWithoutRegisteredItem=0
+--- Missing item models (first 160) ---
+--- Missing armor textures ---
+--- Weapon-like registered items without WeaponProfile (first 220) ---
+crescentscy
+croceaswd
+entityrocket
+gambolswd
+juaneshield
+kkiceshield
+lysetteshield
+myrteswd
+neoumb_open_blade
+pyrrhashield
+qrowscy
+sawblade
+scarletgun
+stormflower_vol7gun
+wattsshield
+--- WeaponProfiles without registered item ---

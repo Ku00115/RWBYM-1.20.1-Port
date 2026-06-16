@@ -1,0 +1,20 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    " D ",
+                    " I ",
+                    "   "
+                ],
+    "key":  {
+                "I":  {
+                          "item":  "rwbym:ozmacane"
+                      },
+                "D":  {
+                          "item":  "rwbym:winddustcrystal"
+                      }
+            },
+    "result":  {
+                   "item":  "rwbym:ozmacanewind",
+                   "count":  1
+               }
+}

@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "name": "beowolf",
+      "rolls": {
+        "min": 0,
+        "max": 1
+      },
+      "entries": [
+        {
+          "type": "item",
+          "name": "rwbym:remnants",
+          "weight": 40
+        }
+      ]
+    }]
+}
+

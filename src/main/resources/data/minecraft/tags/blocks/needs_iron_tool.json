@@ -1,0 +1,18 @@
+﻿{
+    "replace":  false,
+    "values":  [
+                   "rwbym:fireore",
+                   "rwbym:gravityore",
+                   "rwbym:iceore",
+                   "rwbym:impureore",
+                   "rwbym:lightore",
+                   "rwbym:waterore",
+                   "rwbym:windore",
+                   "rwbym:forestironblock",
+                   "rwbym:frostedironblock",
+                   "rwbym:gildedironblock",
+                   "rwbym:roseironblock",
+                   "rwbym:shadowironblock",
+                   "rwbym:viridianironblock"
+               ]
+}
