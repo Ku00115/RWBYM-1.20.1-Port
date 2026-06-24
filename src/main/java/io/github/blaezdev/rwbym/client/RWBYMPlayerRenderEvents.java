@@ -1,18 +1,23 @@
 package io.github.blaezdev.rwbym.client;
 
+import com.mojang.math.Axis;
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.item.RWBYMArmorItem;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Restores original RWBYM player-render layer masking for skin-layout armor.
@@ -48,6 +53,36 @@ public final class RWBYMPlayerRenderEvents {
         if (previous != null) {
             previous.restore(event.getRenderer().getModel());
         }
+        renderActiveHoverboard(event, player);
+    }
+
+    private static void renderActiveHoverboard(RenderPlayerEvent.Post event, AbstractClientPlayer player) {
+        ItemStack board = player.getMainHandItem();
+        if (!isActiveBoard(player, board)) {
+            return;
+        }
+
+        event.getPoseStack().pushPose();
+        if (player.isCrouching()) {
+            event.getPoseStack().translate(0.0D, -0.125D, 0.0D);
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // The 1.12 PlayerRenderHandler rendered the active board in player-root space with HEAD transforms.
+        event.getPoseStack().translate(0.0D, 0.1D, 0.0D);
+        event.getPoseStack().mulPose(Axis.YP.rotationDegrees(90.0F));
+        Minecraft.getInstance().getItemRenderer().renderStatic(player, board, ItemDisplayContext.HEAD,
+                false, event.getPoseStack(), event.getMultiBufferSource(), player.level(), event.getPackedLight(), 0,
+                player.getId());
+        event.getPoseStack().popPose();
+    }
+
+    private static boolean isActiveBoard(AbstractClientPlayer player, ItemStack stack) {
+        if (stack.isEmpty() || !player.isUsingItem() || player.getUseItem() != stack) {
+            return false;
+        }
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        return id != null && id.getNamespace().equals(RWBYM.MOD_ID)
+                && (id.getPath().equals("lucidroseboard") || id.getPath().equals("reese"));
     }
 
     private static boolean hideSkinLayersForArmor(AbstractClientPlayer player, PlayerModel<AbstractClientPlayer> model) {

@@ -127,7 +127,6 @@ public final class RWBYMClientEvents {
             if (renderer != null) {
                 renderer.addLayer(new RWBYMAccessoryLayer(renderer));
                 renderer.addLayer(new RWBYMGliderLayer(renderer, Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer()));
-                renderer.addLayer(new RWBYMHoverboardLayer(renderer));
             }
         }
     }
