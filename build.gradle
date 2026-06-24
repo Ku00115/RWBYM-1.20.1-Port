@@ -151,6 +151,8 @@ dependencies {
 // When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
+    dependsOn 'generateSpecialGunModels'
+
     var replaceProperties = [
             minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
             forge_version: forge_version, forge_version_range: forge_version_range,
@@ -163,6 +165,30 @@ tasks.named('processResources', ProcessResources).configure {
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
+}
+
+tasks.register('generateSpecialGunModels', Exec) {
+    workingDir projectDir
+    commandLine 'node', 'tools/generate_special_gun_models.mjs'
+    inputs.files fileTree('src/main/resources/assets/rwbym/models/item') {
+        include 'p90.bbmodel', 'hecate2.bbmodel'
+    }
+    inputs.file 'tools/convert_bbmodel.mjs'
+    inputs.file 'tools/generate_special_gun_models.mjs'
+    outputs.files(
+            'src/main/resources/assets/rwbym/models/item/p90.json',
+            'src/main/resources/assets/rwbym/models/item/p90_magout.json',
+            'src/main/resources/assets/rwbym/models/item/p90_slideback.json',
+            'src/main/resources/assets/rwbym/models/item/p90_ads.json',
+            'src/main/resources/assets/rwbym/models/item/p90_ads_magout.json',
+            'src/main/resources/assets/rwbym/models/item/p90_ads_slideback.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2_magout.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2_boltback.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2_ads.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2_ads_magout.json',
+            'src/main/resources/assets/rwbym/models/item/hecate2_ads_boltback.json'
+    )
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

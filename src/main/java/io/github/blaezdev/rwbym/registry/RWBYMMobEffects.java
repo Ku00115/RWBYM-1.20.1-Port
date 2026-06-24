@@ -2,6 +2,7 @@ package io.github.blaezdev.rwbym.registry;
 
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.effect.AuraRegenEffect;
+import io.github.blaezdev.rwbym.effect.InstantDamageEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -13,6 +14,8 @@ public final class RWBYMMobEffects {
 
     public static final RegistryObject<MobEffect> AURA_REGEN =
             MOB_EFFECTS.register("aura_regen", AuraRegenEffect::new);
+    public static final RegistryObject<MobEffect> INSTANT_DAMAGE =
+            MOB_EFFECTS.register("instant_damage", InstantDamageEffect::new);
 
     private RWBYMMobEffects() {
     }

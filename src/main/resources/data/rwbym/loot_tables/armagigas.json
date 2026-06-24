@@ -1,0 +1,138 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:remnants"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+          "chance": 0.5,
+          "looting_multiplier": 0.01
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:armasword",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:smrgrave",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinr",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coin_ren",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinjaune",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinnora",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinw",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinb",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coiny",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:mondragon",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:hecate2",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:p90",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:chastifol",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:flyingthundergod",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:bangle",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:heroshield",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:darkrepulser",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:elucidator",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:flashaceballot",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:bonesword",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:infinity",
+          "weight": 5
+        }
+      ]
+    }
+  ]
+}

@@ -1,14 +1,17 @@
 package io.github.blaezdev.rwbym.registry;
 
 import io.github.blaezdev.rwbym.RWBYM;
+import io.github.blaezdev.rwbym.block.GrimmFluidBlock;
 import io.github.blaezdev.rwbym.block.RWBYMInteractiveBlock;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -16,14 +19,20 @@ import net.minecraftforge.registries.RegistryObject;
 public final class RWBYMBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RWBYM.MOD_ID);
     public static final Map<String, RegistryObject<Block>> BLOCKS_BY_NAME = new LinkedHashMap<>();
+    public static final RegistryObject<LiquidBlock> GRIMM_FLUID_BLOCK =
+            BLOCKS.register("fluidgrimm", () -> new GrimmFluidBlock(RWBYMFluids.GRIMM,
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .replaceable()
+                            .noCollission()
+                            .strength(100.0F)
+                            .noLootTable()));
 
     private static final String[] BLOCK_NAMES = {
             "bait",
-            "crush",
             "crusher",
             "fireblock",
             "fireore",
-            "fluidgrimm",
             "forestironblock",
             "frostedironblock",
             "gildedironblock",
@@ -58,7 +67,7 @@ public final class RWBYMBlocks {
         if ("hrdltfence".equals(name)) {
             return new FenceBlock(stoneProperties(name).strength(2.0F, 6.0F));
         }
-        if ("bait".equals(name) || "crusher".equals(name) || "crush".equals(name) || "toolkit".equals(name)) {
+        if ("bait".equals(name) || "crusher".equals(name) || "toolkit".equals(name)) {
             return new RWBYMInteractiveBlock(name, stoneProperties(name));
         }
         return new Block(stoneProperties(name));
@@ -76,6 +85,9 @@ public final class RWBYMBlocks {
 
         if ("lantern".equals(name) || name.endsWith("block")) {
             properties.lightLevel(state -> "lantern".equals(name) ? 14 : 0);
+        }
+        if ("bait".equals(name) || "crusher".equals(name)) {
+            properties.noOcclusion();
         }
 
         return properties;
@@ -134,7 +146,7 @@ public final class RWBYMBlocks {
     }
 
     private static boolean requiresTool(String name) {
-        return name.endsWith("ore") || name.endsWith("block") || "crusher".equals(name) || "crush".equals(name);
+        return name.endsWith("ore") || name.endsWith("block") || "crusher".equals(name);
     }
 
     private RWBYMBlocks() {

@@ -125,7 +125,9 @@ public final class RWBYMWeaponProfiles {
         put(profiles, new WeaponProfile("razorboltknife", 2500, 8, 0x900, "rwbym:razorbolt", "rwbym:rzrbolt", true, 1.00F, false, false, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("lucidroserifle", 2500, 0, 0x0, "rwbym:lucidrosescythe", "rwbym:crmag,rwbym:crfiremag,rwbym:crgravmag,rwbym:crelectricmag", true, 3.00F, false, false, 0, 1, null, null, 10));
         put(profiles, new WeaponProfile("lucidrosescythe", 2500, 17, 0x2, "rwbym:lucidroseboard", "rwbym:crmag,rwbym:crfiremag,rwbym:crgravmag,rwbym:crelectricmag", true, 1.00F, false, false, 0, 1, null, null, 5));
+        put(profiles, new WeaponProfile("lucidroseboard", 2500, 4, 0x0, "rwbym:lucidroserifle", "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("reesegun", 2500, 14, 0x0, "rwbym:reese", "rwbym:spl,rwbym:splfire,rwbym:splgrav,rwbym:splice,rwbym:spllight", true, 1.00F, false, false, 0, 1, null, null, 5));
+        put(profiles, new WeaponProfile("reese", 2500, 12, 0x0, "rwbym:reesegun", "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("bolin", 2500, 16, 0x0, "rwbym:bolinblade", "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("bolinblade", 2500, 17, 0x0, "rwbym:bolin", "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("dew", 2500, 17, 0x2, null, "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
@@ -142,7 +144,8 @@ public final class RWBYMWeaponProfiles {
         put(profiles, new WeaponProfile("ember", 2500, 14, 0x800000, "rwbym:ember2", "rwbym:emammo,rwbym:emfireammo,rwbym:emflareammo", true, 0.80F, false, false, 0, 4, null, null, 7));
         put(profiles, new WeaponProfile("ember2", 2500, 14, 0x800020, "rwbym:ember", "rwbym:emammo,rwbym:emfireammo,rwbym:emflareammo", true, 0.80F, false, false, 0, 4, null, null, 7));
         put(profiles, new WeaponProfile("gambolgun", 2500, 0, 0x4, "rwbym:gambol", "rwbym:gammag,rwbym:gamgravmag,rwbym:gamicemag,rwbym:gamfiremag", true, 1.00F, true, false, 0, 1, null, null, 5));
-        put(profiles, new WeaponProfile("p90", 2500, 0, 0x0, null, "rwbym:gammag,rwbym:gamgravmag,rwbym:gamicemag,rwbym:gamfiremag", false, 1.00F, false, false, 0, 1, null, "wind", 2));
+        put(profiles, new WeaponProfile("p90", 2500, 0, 0x100, null, "rwbym:p90_mag,rwbym:p90bullet", false, 2.50F, false, false, 0, 1, null, null, 2));
+        put(profiles, new WeaponProfile("hecate2", 2500, 0, 0x100, null, "rwbym:hecate_mag,rwbym:50bmg", true, 4.00F, false, false, 0, 1, null, null, 18));
         put(profiles, new WeaponProfile("gambolgunv", 1250, 0, 0x104, "rwbym:juanev", "rwbym:ammov", true, 1.00F, true, false, 0, 1, null, null, 5));
         put(profiles, new WeaponProfile("stormflower", 2500, 14, 0x4000800, null, "rwbym:gammag,rwbym:gamgravmag,rwbym:gamicemag,rwbym:gamfiremag", false, 1.00F, false, false, 0, 1, null, null, 3));
         put(profiles, new WeaponProfile("noragun", 2500, 0, 0x0, "rwbym:norahammer", "rwbym:magnammo,rwbym:magnaampammo", true, 1.00F, false, false, 0, 1, null, null, 7));
@@ -196,10 +199,10 @@ public final class RWBYMWeaponProfiles {
         put(profiles, new WeaponProfile("cardin", 2500, 14, 0x1000000, null, "rwbym:firedust,rwbym:firedustcrystal", true, 1.00F, false, false, 0, 1, null, "fire", 3));
         put(profiles, new WeaponProfile("nebulabow", 2500, 0, 0x80, "rwbym:nebulasword", "minecraft:arrow,minecraft:tipped_arrow,rwbym:bolt,rwbym:boltwind,rwbym:boltlight,rwbym:boltice,rwbym:boltgrav,rwbym:boltfire", true, 2.00F, false, false, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("nebulasword", 2500, 14, 0x1000, "rwbym:nebulabow", "rwbym:nuller,rwbym:nullest", true, 1.00F, false, false, 0, 1, null, null, 0));
-        put(profiles, new WeaponProfile("lieutenant", 2500, 10, 0x100000, null, "rwbym:nuller,rwbym:nullest", true, 1.00F, false, true, 0, 1, null, null, 0));
-        put(profiles, new WeaponProfile("henchmenaxe", 2500, 13, 0x100000, null, "rwbym:nuller,rwbym:nullest", true, 1.00F, false, false, 0, 1, null, null, 0));
+        put(profiles, new WeaponProfile("lieutenant", 2500, 10, 0x100000, null, "rwbym:nuller,rwbym:nullest", true, 0.00F, false, true, 0, 1, null, null, 0));
+        put(profiles, new WeaponProfile("henchmenaxe", 2500, 13, 0x100000, null, "rwbym:nuller,rwbym:nullest", true, 0.00F, false, false, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("fetch", 2500, 0, 0x0, "rwbym:fetchboomerang", "rwbym:neptammo,rwbym:magnaampammo", true, 2.00F, false, false, 0, 1, null, null, 8));
-        put(profiles, new WeaponProfile("fetchboomerang", 2500, 18, 0x12000000, "rwbym:fetch", "rwbym:fetchammo", true, 1.00F, false, false, 0, 1, null, null, 0));
+        put(profiles, new WeaponProfile("fetchboomerang", 2500, 18, 0x12000000, "rwbym:fetch", "rwbym:fetchammo", true, 0.00F, false, false, 0, 1, null, null, 0));
         put(profiles, new WeaponProfile("atlaspistol", 2500, 0, 0x0, null, "rwbym:gammag,rwbym:gamgravmag,rwbym:gamicemag,rwbym:gamfiremag", true, 1.00F, false, false, 0, 1, null, null, 3));
         put(profiles, new WeaponProfile("atlasrifle", 2500, 0, 0x0, null, "rwbym:crmag,rwbym:crfiremag,rwbym:crgravmag,rwbym:crelectricmag", true, 1.00F, false, false, 0, 1, null, null, 4));
         put(profiles, new WeaponProfile("vernal", 2500, 15, 0x0, null, "rwbym:gammag,rwbym:gamgravmag,rwbym:gamicemag,rwbym:gamfiremag", true, 0.80F, true, false, 0, 2, null, null, 7));

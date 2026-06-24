@@ -1,0 +1,117 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 0,
+        "max": 1
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:remnants"
+        }
+      ]
+    },
+    {
+      "rolls": 4,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+          "chance": 1.0,
+          "looting_multiplier": 0.0
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:fairyking"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:relicofknowledge"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:kingsgambit"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:kingsgambitpawn"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:firedancercharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:criticalcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:auracharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:healthcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:reachcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:puncturecharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:edgecharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:knockoutcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:tankcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:attackcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:feathercharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:fleetingcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:rushcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:glider",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_count",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

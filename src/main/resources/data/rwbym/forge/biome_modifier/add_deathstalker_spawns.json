@@ -3,7 +3,7 @@
     "biomes":  "#minecraft:is_overworld",
     "spawners":  {
                      "type":  "rwbym:deathstalker",
-                     "weight":  5,
+                     "weight":  1,
                      "minCount":  1,
                      "maxCount":  1
                  }

@@ -1,20 +1,64 @@
-RegisteredItems=841 WeaponProfiles=239 MissingItemModels=0 ArmorItems=151 MissingArmorTextures=0 WeaponLikeWithoutProfile=15 ProfilesWithoutRegisteredItem=0
+RegisteredItems=841 WeaponProfiles=242 MissingItemModels=0 ArmorItems=151 MissingArmorTextures=0 WeaponLikeWithoutProfile=0 ProfilesWithoutRegisteredItem=0
 --- Missing item models (first 160) ---
 --- Missing armor textures ---
 --- Weapon-like registered items without WeaponProfile (first 220) ---
-crescentscy
-croceaswd
-entityrocket
-gambolswd
-juaneshield
-kkiceshield
-lysetteshield
-myrteswd
-neoumb_open_blade
-pyrrhashield
-qrowscy
-sawblade
-scarletgun
-stormflower_vol7gun
-wattsshield
 --- WeaponProfiles without registered item ---
+
+=== 2026-06-18 upstream source comparison ===
+Compared against: C:\Users\36357\Desktop\RWBYM-original
+Current port:     C:\Users\36357\Desktop\1.20.1
+
+Build/resource status:
+- The 1.20.1 project builds successfully with gradle.
+- Current item model texture audit reports MissingModelTextures=0.
+- Weapon profile audit reports all 242 migrated weapon profiles have registered items/models/morph targets/ammo references.
+
+High-level source size comparison:
+- Original top-level Java packages: blocks=12, capabilities=85, client=17, commands=3, enchantments=22, entity=119, gui=15, handler=1, Init=13, inventory=6, potion=2, proxy=3, utility=37, weaponry=36, world=6.
+- Current top-level Java packages: block=2, capability=8, client=22, command=1, effect=1, entity=2, item=16, menu=1, network=3, registry=11.
+
+Mostly/partially ported:
+- Items/resources: the migrated item and block model set is registered broadly; current audit has no missing item models.
+- Weapons: shared 1.20 weapon behavior exists, including profile ammo, morphs, visible projectile entities, camera recoil packet, weapon modifier enchantments, P90/Hecate magazine predicates, and fired ammo item rendering.
+- Special guns: P90/Hecate now have a 1.20 client/server special-gun control layer. The port restores ADS, explicit shoot packets, slide/bolt cycling, chamber/eject behavior, hammer cocking, mag release, mag insertion, fire-select state, and special-gun item predicates.
+- Special gun models: the original P90/Hecate Blockbench models are converted into 1.20 vanilla item JSON by tools/generate_special_gun_models.mjs. Generated model variants cover ADS, mag-out, slide/bolt-back, and ADS-combined states; build.gradle runs this generation before processResources.
+- Armor/cosmetics: many armor items, wearable cosmetics, limb cosmetics, armor model layers, and first-pass armor/charm perks are wired.
+- Entity registry parity: all 44 original `RWBYEntities` registry ids are now present in 1.20.1. The current port also keeps the extra 1.20-only `weapon_projectile` entity used by the shared weapon projectile system.
+- Grimm baseline: the original Grimm ids now have first-pass entity registrations, attributes, spawn placements, renderers, spawn eggs, localization, and loot. The nine previously ported Grimm keep their legacy models; newly added Grimm use texture-backed transitional renderers until their original model classes/AI are ported individually.
+- Crusher: block entity, menu, screen, and hardcoded dust/cut-gem processing exist.
+- Enchantments: the 22 original weapon modifier enchantments have corresponding current registrations.
+- Sounds: original weapon sound events are registered in the current port.
+- Ore generation: dust ores have 1.20 configured/placed features and biome modifiers.
+
+Partially ported but still not original-complete:
+- The original 1.12 BBGunLoader/BakedGunModel/GunOverrideHandler classes were not copied directly because that baked model API is not compatible with Forge 1.20.1. Their practical P90/Hecate output is now represented through generated vanilla JSON variants plus item predicates. A deeper future pass could add a true custom 1.20 geometry loader if more non-vanilla dynamic model behavior is needed.
+- Semblance is simplified into one generic capability. Original individual capabilities are not ported as separate behavior classes: Blake, Blank, Clover, Harriet, Hazel, Jaune, Lysette, Nora, Predator, Pyrrha, Qrow, Ragora, Ren, Ruby, Valour, Weiss, Yang, and Maiden/Fall.
+- Aura exists, but original team/itemdata/request/player-data capability sync and related gameplay are not ported.
+- Blocks are mostly simple Block/FenceBlock/RWBYMInteractiveBlock instances. Original block-specific behavior still missing or incomplete for lantern/not-full/custom shapes, full Grimm bait tile logic, full crusher recipe system, and fluid block behavior.
+- Crusher recipes are hardcoded transitional logic, not the original CrusherRecipe registry/data parity.
+- Armor/charm perks have a first-pass port, but full original ArmourBase edge cases and all special perk interactions still need review.
+- Basic Grimm use shared BasicGrimmEntity behavior with first-pass differences for flying Grimm, poison, Apathy aura, heavy slowing hits, charging knockback, and basic boss-scale attributes; original per-entity AI/attacks/boss logic is not fully restored.
+
+Not yet ported / missing major systems:
+- Entity AI/model parity: all original entity ids are registered, but most newly restored entities are transitional. Dedicated original behavior still needs deeper ports for bosses/flying Grimm (Goliath, Nevermore/Giant Nevermore, Wyvern, Ravager, Queen Lancer), Armorgeist/Geist, Arachne clone logic, Blake/Ren/Ragora/Zwei summon behavior, Atlas Knight, and merchant interaction/trading.
+- Entity render/model parity: many original model classes are still not ported to the 1.20 legacy model adapter. Newly added entities use migrated textures on a generic humanoid renderer when no converted model exists.
+- Merchants/shops/trading: EntityStore, EntityWeaponStore, EntityBlackStore, EntityArmourStore, EntityRWBYMMerchant, ContainerVillager, GuiVillager, GuiTradingBook, TradingRecipe/List, GhostTrade, and trading network messages are not ported.
+- GUI/inventory: original scroll/team/request screens and item-container inventories are not ported. Current GUI/menu coverage is only CrusherScreen/CrusherMenu.
+- Network: original registers about 25 gameplay messages; current channel has only AppearanceSyncPacket and CameraRecoilPacket. Missing message coverage includes semblance activation/cycle, player data sync, position/motion updates, EXP, team requests, trading, flying, eject/reload/NBT, play sound, shoot, add inventory, item data sync, predator sync, and movement packets.
+- Keybinds: original special gun controls are now ported for P90/Hecate. Semblance activate/cycle keybinds are still not ported.
+- Fluids: original RWBYFluids registers Grimm fluid plus bucket and BlockFluidGrimm; current fluidgrimm is registered as a plain block, not as a Forge fluid/bucket/liquid.
+- Biomes: original custom biomes Forever Fall, Cliff Side, Grimm Wastes, and Domain of Light are not ported.
+- Structures/worldgen: original structure assets rwbym1.nbt through rwbym5.nbt and rwbymraid.nbt are present, but current 1.20 data only has ore configured/placed features. Original structure placement, raid structure, village shop generation, SubWorldGen, and Grimm fluid lake generation are not ported.
+- Config: original RWBYConfig categories for general settings, mob spawn rates, mob attributes, aura, and mining/worldgen are not ported to ForgeConfigSpec or equivalent 1.20 config.
+- Potions/effects: current only ports Aura Regen. Original PotionDamage/instant damage potion behavior is not ported.
+- Particles/overlays: original rose petal particle/render events and overlay resources are not wired in current 1.20 client code.
+- Player lifecycle/render hooks: original PlayerSpawnHandler, PlayerRenderHandler, EntityUpdatesHandler, custom player render paths, and some spawn/update gameplay are not ported.
+- Loot/data cleanup: legacy loot tables still exist under assets/rwbym/loot_tables and assets/rwbym/loot_tables_bak. Valid 1.20 entity loot now covers all currently registered Grimm ids with a standard remnants/lien drop table.
+
+Suggested porting priority:
+1. Deep-port original entity behavior/model parity: bosses/flying Grimm first, then Armorgeist/Geist/Arachne, then NPCs/shops/semblance clones/summons.
+2. Port merchant/trading GUI/network/inventory systems so the restored shop NPC ids are functional.
+3. Port Grimm fluid as a real fluid/block/bucket and restore Grimm fluid lake generation.
+4. Port custom biomes and structure/raid/village shop worldgen.
+5. Expand semblance from the generic current implementation into original per-semblance behavior, keybinds, and sync.
+6. Replace remaining transitional block and crusher behavior with original-complete logic/data.

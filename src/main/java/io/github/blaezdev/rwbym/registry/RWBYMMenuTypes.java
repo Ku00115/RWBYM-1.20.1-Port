@@ -2,6 +2,7 @@ package io.github.blaezdev.rwbym.registry;
 
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.menu.CrusherMenu;
+import io.github.blaezdev.rwbym.menu.RWBYMMerchantMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,6 +16,10 @@ public final class RWBYMMenuTypes {
     public static final RegistryObject<MenuType<CrusherMenu>> CRUSHER =
             MENU_TYPES.register("crusher", () -> IForgeMenuType.create((windowId, inv, data) ->
                     new CrusherMenu(windowId, inv)));
+
+    public static final RegistryObject<MenuType<RWBYMMerchantMenu>> MERCHANT =
+            MENU_TYPES.register("merchant", () -> IForgeMenuType.create((windowId, inv, data) ->
+                    new RWBYMMerchantMenu(windowId, inv, data.readVarInt())));
 
     private RWBYMMenuTypes() {
     }

@@ -1,0 +1,7 @@
+{
+  "loader": "forge:fluid_container",
+  "fluid": "rwbym:grimm",
+  "parent": "forge:item/bucket",
+  "flip_gas": true,
+  "apply_fluid_luminosity": true
+}

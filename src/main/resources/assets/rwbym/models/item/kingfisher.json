@@ -7079,6 +7079,9 @@
 			}
 		}
 	],
+	"overrides": [
+		{"predicate": {"cast": 1}, "model": "rwbym:item/kingfishercast"}
+	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [0, 16.75, 1]

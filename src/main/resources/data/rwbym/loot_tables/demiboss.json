@@ -1,0 +1,85 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:remnants"
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+          "chance": 1.0,
+          "looting_multiplier": 0.5
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:firedancercharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:criticalcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:auracharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:healthcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:reachcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:puncturecharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:edgecharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:knockoutcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:tankcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:attackcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:feathercharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:fleetingcharm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:rushcharm"
+        }
+      ]
+    }
+  ]
+}

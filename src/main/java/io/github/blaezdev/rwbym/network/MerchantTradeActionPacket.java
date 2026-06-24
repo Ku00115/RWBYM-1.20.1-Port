@@ -1,0 +1,36 @@
+package io.github.blaezdev.rwbym.network;
+
+import io.github.blaezdev.rwbym.menu.RWBYMMerchantMenu;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
+
+/**
+ * Client-to-server packet for RWBYM's legacy merchant book quick-trade action.
+ *
+ * <p>Linked files: {@code RWBYMMerchantScreen.java}, {@code RWBYMMerchantMenu.java},
+ * and {@code RWBYMMerchantEntity.java}.</p>
+ */
+// AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
+    public static void encode(MerchantTradeActionPacket packet, FriendlyByteBuf buffer) {
+        buffer.writeVarInt(packet.offerIndex);
+        buffer.writeBoolean(packet.tradeAll);
+    }
+
+    public static MerchantTradeActionPacket decode(FriendlyByteBuf buffer) {
+        return new MerchantTradeActionPacket(buffer.readVarInt(), buffer.readBoolean());
+    }
+
+    public static void handle(MerchantTradeActionPacket packet, Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ServerPlayer player = context.get().getSender();
+            if (player == null || !(player.containerMenu instanceof RWBYMMerchantMenu merchantMenu)) {
+                return;
+            }
+            merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll);
+        });
+        context.get().setPacketHandled(true);
+    }
+}

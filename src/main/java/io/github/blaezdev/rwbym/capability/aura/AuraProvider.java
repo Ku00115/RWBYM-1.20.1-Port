@@ -27,4 +27,8 @@ public class AuraProvider implements ICapabilitySerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag tag) {
         this.aura.deserialize(tag);
     }
+
+    public void invalidate() {
+        this.optional.invalidate();
+    }
 }

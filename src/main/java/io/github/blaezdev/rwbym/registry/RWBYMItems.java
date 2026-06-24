@@ -7,7 +7,16 @@ import io.github.blaezdev.rwbym.item.BasicGunItem;
 import io.github.blaezdev.rwbym.item.BasicWeaponItem;
 import io.github.blaezdev.rwbym.item.RWBYMArmorItem;
 import io.github.blaezdev.rwbym.item.RWBYMArmorMaterials;
+import io.github.blaezdev.rwbym.item.RWBYMAmmoItem;
+import io.github.blaezdev.rwbym.item.RWBYMContainerItem;
+import io.github.blaezdev.rwbym.item.RWBYMCutGemItem;
+import io.github.blaezdev.rwbym.item.RWBYMFuelItem;
+import io.github.blaezdev.rwbym.item.RWBYMFishingWeaponItem;
+import io.github.blaezdev.rwbym.item.RWBYMGliderItem;
 import io.github.blaezdev.rwbym.item.RWBYMLimbItem;
+import io.github.blaezdev.rwbym.item.RWBYMMagazineItem;
+import io.github.blaezdev.rwbym.item.RWBYMScrollItem;
+import io.github.blaezdev.rwbym.item.RWBYMSummonItem;
 import io.github.blaezdev.rwbym.item.RWBYMWearableItem;
 import io.github.blaezdev.rwbym.item.RWBYMWeaponItem;
 import io.github.blaezdev.rwbym.item.RWBYMWeaponProfiles;
@@ -17,6 +26,7 @@ import java.util.Map;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -28,6 +38,8 @@ public final class RWBYMItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RWBYM.MOD_ID);
     public static final Map<String, RegistryObject<Item>> SIMPLE_ITEMS = new LinkedHashMap<>();
     public static final Map<String, RegistryObject<Item>> BLOCK_ITEMS = new LinkedHashMap<>();
+    public static final RegistryObject<Item> GRIMM_BUCKET = ITEMS.register("grimm_bucket",
+            () -> new BucketItem(RWBYMFluids.GRIMM, new Item.Properties().stacksTo(1)));
 
     private static final String[] SIMPLE_ITEM_NAMES = {
             "50bmg",
@@ -161,6 +173,7 @@ public final class RWBYMItems {
             "chatgravmag",
             "chatmag",
             "chisel",
+            "crush",
             "chissel2",
             "cinder",
             "cinder1_chest",
@@ -258,6 +271,7 @@ public final class RWBYMItems {
             "dustcrystal",
             "dustcrystalcut",
             "dustcrystalhardlight",
+            "dustcut",
             "dustcutgem",
             "dustpouch",
             "dustrock",
@@ -321,6 +335,7 @@ public final class RWBYMItems {
             "fetchboomerang",
             "firedancercharm",
             "firedust",
+            "firedustcut",
             "firedustcrystal",
             "firedustcrystalcut",
             "firedustrock",
@@ -357,6 +372,7 @@ public final class RWBYMItems {
             "golddragontail",
             "goodwitch",
             "gravitydust",
+            "gravitydustcut",
             "gravitydustcrystal",
             "gravitydustcrystalcut",
             "gravitydustrock",
@@ -415,6 +431,7 @@ public final class RWBYMItems {
             "hollowtomewind",
             "hsanrei",
             "icedust",
+            "icedustcut",
             "icedustcrystal",
             "icedustcrystalcut",
             "icedustrock",
@@ -486,6 +503,7 @@ public final class RWBYMItems {
             "lienwallet",
             "lieutenant",
             "lightdust",
+            "lightdustcut",
             "lightdustcrystal",
             "lightdustcrystalcut",
             "lightdustrock",
@@ -661,6 +679,7 @@ public final class RWBYMItems {
             "rabbittailorange",
             "rabbittailwhite",
             "rageshield",
+            "ragorafireball",
             "ragora_chest",
             "ragora_head",
             "ragora_legs",
@@ -777,6 +796,7 @@ public final class RWBYMItems {
             "thornammo",
             "timber",
             "timberhammer",
+            "taintedartefact",
             "tir",
             "tocksword",
             "tockswordoh",
@@ -795,6 +815,7 @@ public final class RWBYMItems {
             "viridianiron",
             "vodka",
             "waterdust",
+            "waterdustcut",
             "waterdustcrystal",
             "waterdustcrystalcut",
             "waterdustrock",
@@ -826,6 +847,7 @@ public final class RWBYMItems {
             "whitewolftail",
             "whtefng",
             "winddust",
+            "winddustcut",
             "winddustcrystal",
             "winddustcrystalcut",
             "winddustrock",
@@ -870,6 +892,9 @@ public final class RWBYMItems {
             "whisperammo",
             "carminesaiammo",
             "carminestaffammo",
+            "coinfall",
+            "coin_raven",
+            "entityextasisammo",
             "zwei"
     };
 
@@ -877,26 +902,53 @@ public final class RWBYMItems {
         for (String name : SIMPLE_ITEM_NAMES) {
             SIMPLE_ITEMS.put(name, ITEMS.register(name, () -> createSimpleItem(name)));
         }
-        RWBYMBlocks.BLOCKS_BY_NAME.forEach((name, block) ->
-                BLOCK_ITEMS.put(name, ITEMS.register(name, () -> new BlockItem(block.get(), blockItemProperties(name)))));
-        SIMPLE_ITEMS.put("beowolf_spawn_egg", ITEMS.register("beowolf_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.BEOWOLF, 0x111111, 0xD8D8D8, new Item.Properties())));
-        SIMPLE_ITEMS.put("ursa_spawn_egg", ITEMS.register("ursa_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.URSA, 0x1A1A1A, 0xAFAFAF, new Item.Properties())));
-        SIMPLE_ITEMS.put("boarbatusk_spawn_egg", ITEMS.register("boarbatusk_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.BOARBATUSK, 0x202020, 0x9B2D2D, new Item.Properties())));
-        SIMPLE_ITEMS.put("creep_spawn_egg", ITEMS.register("creep_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.CREEP, 0x191919, 0x6F6F6F, new Item.Properties())));
-        SIMPLE_ITEMS.put("sabyr_spawn_egg", ITEMS.register("sabyr_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.SABYR, 0x151515, 0xB0B0B0, new Item.Properties())));
-        SIMPLE_ITEMS.put("beringle_spawn_egg", ITEMS.register("beringle_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.BERINGLE, 0x101010, 0x8A1F1F, new Item.Properties())));
-        SIMPLE_ITEMS.put("apathy_spawn_egg", ITEMS.register("apathy_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.APATHY, 0x2D2D2D, 0xCFCFCF, new Item.Properties())));
-        SIMPLE_ITEMS.put("deathstalker_spawn_egg", ITEMS.register("deathstalker_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.DEATHSTALKER, 0x090909, 0x6D1414, new Item.Properties())));
-        SIMPLE_ITEMS.put("lancer_spawn_egg", ITEMS.register("lancer_spawn_egg",
-                () -> new ForgeSpawnEggItem(RWBYMEntityTypes.LANCER, 0x121212, 0xD9D9D9, new Item.Properties())));
+        RWBYMBlocks.BLOCKS_BY_NAME.forEach((name, block) -> {
+            if (!"fluidgrimm".equals(name)) {
+                BLOCK_ITEMS.put(name,
+                        ITEMS.register(name, () -> new BlockItem(block.get(), blockItemProperties(name))));
+            }
+        });
+        spawnEgg("beowolf", RWBYMEntityTypes.BEOWOLF, 0x111111, 0xD8D8D8);
+        spawnEgg("winter_beowolf", RWBYMEntityTypes.WINTER_BEOWOLF, 0xD8D8D8, 0x111111);
+        spawnEgg("ursa", RWBYMEntityTypes.URSA, 0x1A1A1A, 0xAFAFAF);
+        spawnEgg("winter_ursa", RWBYMEntityTypes.WINTER_URSA, 0xD8D8D8, 0x1A1A1A);
+        spawnEgg("ursamajor", RWBYMEntityTypes.URSA_MAJOR, 0x0F0F0F, 0x7A1010);
+        spawnEgg("boarbatusk", RWBYMEntityTypes.BOARBATUSK, 0x202020, 0x9B2D2D);
+        spawnEgg("winter_boarbatusk", RWBYMEntityTypes.WINTER_BOARBATUSK, 0xD8D8D8, 0x9B2D2D);
+        spawnEgg("creep", RWBYMEntityTypes.CREEP, 0x191919, 0x6F6F6F);
+        spawnEgg("sabyr", RWBYMEntityTypes.SABYR, 0x151515, 0xB0B0B0);
+        spawnEgg("beringle", RWBYMEntityTypes.BERINGLE, 0x101010, 0x8A1F1F);
+        spawnEgg("apathy", RWBYMEntityTypes.APATHY, 0x2D2D2D, 0xCFCFCF);
+        spawnEgg("deathstalker", RWBYMEntityTypes.DEATHSTALKER, 0x090909, 0x6D1414);
+        spawnEgg("mutantdeathstalker", RWBYMEntityTypes.MUTANT_DEATHSTALKER, 0x050505, 0xB71717);
+        spawnEgg("tinyeathstalker", RWBYMEntityTypes.TINY_DEATHSTALKER, 0x090909, 0xC7C7C7);
+        spawnEgg("lancer", RWBYMEntityTypes.LANCER, 0x121212, 0xD9D9D9);
+        spawnEgg("queenlancer", RWBYMEntityTypes.QUEEN_LANCER, 0x101010, 0xF0D36B);
+        spawnEgg("goliath", RWBYMEntityTypes.GOLIATH, 0x151515, 0x8D8D8D);
+        spawnEgg("nevermore", RWBYMEntityTypes.NEVERMORE, 0x111111, 0xEFEFEF);
+        spawnEgg("giantnevermore", RWBYMEntityTypes.GIANT_NEVERMORE, 0x050505, 0xEFEFEF);
+        spawnEgg("armorgeist", RWBYMEntityTypes.ARMORGEIST, 0x111111, 0xB3B3B3);
+        spawnEgg("winterarmorgeist", RWBYMEntityTypes.WINTER_ARMORGEIST, 0xD8D8D8, 0x111111);
+        spawnEgg("geist", RWBYMEntityTypes.GEIST, 0x1D1D1D, 0xB3B3B3);
+        spawnEgg("nuckleeve", RWBYMEntityTypes.NUCKLEEVE, 0x111111, 0x6B1A1A);
+        spawnEgg("wyvern", RWBYMEntityTypes.WYVERN, 0x050505, 0xA00000);
+        spawnEgg("ravager", RWBYMEntityTypes.RAVAGER, 0x151515, 0xCCCCCC);
+        spawnEgg("seer", RWBYMEntityTypes.SEER, 0x191919, 0x8C1A1A);
+        spawnEgg("arachne", RWBYMEntityTypes.ARACHNE, 0x111111, 0xB9B9B9);
+        spawnEgg("arachneclone", RWBYMEntityTypes.ARACHNE_CLONE, 0x111111, 0x777777);
+        spawnEgg("hollow", RWBYMEntityTypes.HOLLOW, 0x1C1C1C, 0xE8E8E8);
+        spawnEgg("atlasknight", RWBYMEntityTypes.ATLAS_KNIGHT, 0xD0D0D0, 0x202020);
+        spawnEgg("blake", RWBYMEntityTypes.BLAKE, 0x1A1A1A, 0xC7A0D8);
+        spawnEgg("blakefire", RWBYMEntityTypes.BLAKE_FIRE, 0x1A1A1A, 0xE45C25);
+        spawnEgg("blakeice", RWBYMEntityTypes.BLAKE_ICE, 0x1A1A1A, 0x8FD6FF);
+        spawnEgg("store", RWBYMEntityTypes.STORE, 0x4A3A26, 0xE6C16A);
+        spawnEgg("weaponstore", RWBYMEntityTypes.WEAPON_STORE, 0x404040, 0xC8C8C8);
+        spawnEgg("blackstore", RWBYMEntityTypes.BLACK_STORE, 0x101010, 0x6B2D86);
+        spawnEgg("armorstore", RWBYMEntityTypes.ARMOR_STORE, 0xA0A0A0, 0x5C5C5C);
+        spawnEgg("crowbar", RWBYMEntityTypes.CROWBAR, 0x2E2E2E, 0x8B1A1A);
+        spawnEgg("ren", RWBYMEntityTypes.REN, 0x2E5C35, 0xD9D9D9);
+        spawnEgg("ragora", RWBYMEntityTypes.RAGORA, 0x2C1A3D, 0xD6B26A);
+        spawnEgg("zwei", RWBYMEntityTypes.ZWEI, 0x9D6B37, 0xF0E2C0);
     }
 
     public static final RegistryObject<Item> ICON = SIMPLE_ITEMS.containsKey("icon")
@@ -909,6 +961,11 @@ public final class RWBYMItems {
             return new RWBYMArmorItem(name, RWBYMArmorMaterials.HUNTSMAN, armorType, new Item.Properties());
         }
         Item.Properties properties = propertiesFor(name);
+        if (isScrollItem(name)) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy scroll items open the Scroll GUI instead of behaving like inert cosmetic items.
+            return new RWBYMScrollItem(properties);
+        }
         String limbSlot = limbSlotFor(name);
         if (limbSlot != null) {
             return new RWBYMLimbItem(name, limbSlot, properties);
@@ -919,11 +976,41 @@ public final class RWBYMItems {
         if (isFoodLike(name)) {
             return new BasicFoodItem(name, properties);
         }
-        if (isCharmLike(name)) {
-            return new BasicCharmItem(name, properties);
+        if (isFootCharm(name)) {
+            return new RWBYMWearableItem(name, EquipmentSlot.FEET, properties);
         }
         if (isSemblanceCoin(name)) {
             return new SemblanceCoinItem(name, properties);
+        }
+        if (isContainerItem(name)) {
+            return new RWBYMContainerItem(containerSlots(name), acceptedContainerItems(name), properties);
+        }
+        if (isCutGem(name)) {
+            return new RWBYMCutGemItem(name, properties);
+        }
+        if (isEntitySummonItem(name)) {
+            return new RWBYMSummonItem(name, properties);
+        }
+        if (isFishingWeapon(name)) {
+            return new RWBYMFishingWeaponItem(properties);
+        }
+        if (isGlider(name)) {
+            return new RWBYMGliderItem(properties);
+        }
+        if (isSpecialMagazine(name)) {
+            return new RWBYMMagazineItem(magazineAmmoFor(name), magazineCapacityFor(name), properties);
+        }
+        if (isInternalModelPart(name)) {
+            return new Item(properties);
+        }
+        if (isAmmoLike(name) || isFuelDust(name)) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy RWBYAmmoItem gave Dust offhand attributes/passives and furnace fuel behavior.
+            return new RWBYMAmmoItem(name, properties);
+        }
+        if (isFuelCrystal(name)) {
+            // Original RWBYItem used id-name detection for non-ammo crystal furnace fuel.
+            return new RWBYMFuelItem(2400, properties);
         }
         if (RWBYMWeaponProfiles.contains(name)) {
             return new RWBYMWeaponItem(RWBYMWeaponProfiles.get(name), properties, shootSoundFor(name));
@@ -937,20 +1024,38 @@ public final class RWBYMItems {
         return new Item(properties);
     }
 
+    private static void spawnEgg(String name,
+            RegistryObject<? extends net.minecraft.world.entity.EntityType<? extends net.minecraft.world.entity.Mob>> type,
+            int primaryColor, int secondaryColor) {
+        SIMPLE_ITEMS.put(name + "_spawn_egg", ITEMS.register(name + "_spawn_egg",
+                () -> new ForgeSpawnEggItem(type, primaryColor, secondaryColor, new Item.Properties())));
+    }
+
     private static Item.Properties propertiesFor(String name) {
         Item.Properties properties = new Item.Properties();
         if (isSingleStackItem(name)) {
             properties.stacksTo(1);
         } else if (isFoodLike(name)) {
-            properties.stacksTo(16);
+            properties.stacksTo(BasicFoodItem.legacyStackLimit(name));
+        } else if (isSpecialMagazine(name)) {
+            properties.stacksTo(1);
         } else if (isMagazineLike(name)) {
             properties.stacksTo(16);
-        } else if (isAmmoLike(name)) {
+        } else if (isAmmoLike(name) || isFuelDust(name)) {
             properties.stacksTo(64);
         }
         if (RWBYMWeaponProfiles.contains(name)) {
             properties.durability(RWBYMWeaponProfiles.get(name).durability());
-        } else if (name.equals("chisel")) {
+        } else if (RWBYMWearableItem.isLegacyHoodName(name)) {
+            properties.durability(2500);
+        } else if (isGlider(name)) {
+            properties.stacksTo(1).durability(2500);
+        } else if (isFoodLike(name) && BasicFoodItem.isDurableFood(name)) {
+            // Original RWBYFood damaged selected drink/food stacks instead of consuming them.
+            properties.durability(3);
+        } else if (isFishingWeapon(name)) {
+            properties.durability(2500);
+        } else if (name.equals("chisel") || name.equals("crush")) {
             properties.durability(255);
         } else if (isWeaponLike(name)) {
             properties.durability(500);
@@ -989,13 +1094,19 @@ public final class RWBYMItems {
     }
 
     private static boolean isSingleStackItem(String name) {
-        return name.contains("scroll")
-                || name.endsWith("charm")
+        return isScrollItem(name)
+                || isFootCharm(name)
+                || isContainerItem(name)
                 || name.endsWith("bangle")
                 || name.endsWith("camera")
                 || name.endsWith("cam")
                 || name.equals("chisel")
+                || name.equals("crush")
                 || isHeadWearable(name);
+    }
+
+    private static boolean isScrollItem(String name) {
+        return name.contains("scroll");
     }
 
     private static boolean isAmmoLike(String name) {
@@ -1005,14 +1116,22 @@ public final class RWBYMItems {
                 || name.contains("shell")
                 || name.equals("bolt")
                 || name.startsWith("bolt")
+                || name.endsWith("dustcut")
+                || name.equals("ragorafireball")
                 || name.equals("sawblade");
     }
 
     private static boolean isFoodLike(String name) {
-        return name.equals("coffee")
+        return name.equals("hchoc")
+                || name.equals("coffee")
+                || name.equals("sunrise")
+                || name.equals("plg")
+                || name.equals("qrowflask")
                 || name.equals("coconutmilk")
                 || name.equals("pancakes")
                 || name.equals("fishramen")
+                || name.equals("ramen")
+                || name.equals("peach")
                 || name.equals("bourbon")
                 || name.equals("brandy")
                 || name.equals("vodka")
@@ -1023,6 +1142,14 @@ public final class RWBYMItems {
 
     private static boolean isCharmLike(String name) {
         return name.endsWith("charm");
+    }
+
+    private static boolean isFootCharm(String name) {
+        return isCharmLike(name)
+                || name.equals("fairyking")
+                || name.equals("kingsgambit")
+                || name.equals("kingsgambitpawn")
+                || name.equals("relicofknowledge");
     }
 
     private static boolean isSemblanceCoin(String name) {
@@ -1037,6 +1164,8 @@ public final class RWBYMItems {
                 || name.equals("coin_lysette")
                 || name.equals("coinqrow")
                 || name.equals("coinraven")
+                || name.equals("coin_raven")
+                || name.equals("coinfall")
                 || name.equals("coin_ragora")
                 || name.equals("coin_clover")
                 || name.equals("coin_harriet")
@@ -1049,7 +1178,10 @@ public final class RWBYMItems {
         return name.endsWith("hood")
                 || name.endsWith("mask")
                 || name.endsWith("glasses")
-                || name.endsWith("hat");
+                || name.endsWith("hat")
+                // Original RWBYHood ids without a conventional wearable suffix.
+                || name.equals("mariaeyes")
+                || name.equals("whtefng");
     }
 
     private static String limbSlotFor(String name) {
@@ -1096,8 +1228,78 @@ public final class RWBYMItems {
                 || name.contains("magazine");
     }
 
+    private static boolean isCutGem(String name) {
+        return name.equals("dustcutgem") || name.endsWith("dustcrystalcut");
+    }
+
+    private static boolean isFuelCrystal(String name) {
+        return name.contains("crystal");
+    }
+
+    private static boolean isFuelDust(String name) {
+        return name.equals("dustcrystal")
+                || name.equals("dustcrystalhardlight")
+                || name.endsWith("dustcrystal")
+                || isElementalDust(name);
+    }
+
+    private static boolean isElementalDust(String name) {
+        return name.equals("waterdust")
+                || name.equals("winddust")
+                || name.equals("firedust")
+                || name.equals("icedust")
+                || name.equals("lightdust")
+                || name.equals("gravitydust")
+                || name.equals("firedust2");
+    }
+
+    private static boolean isEntitySummonItem(String name) {
+        return name.equals("armagigas") || name.equals("atlasknight") || name.equals("zwei");
+    }
+
+    private static boolean isContainerItem(String name) {
+        return name.equals("lienwallet")
+                || name.equals("dustpouch")
+                || name.equals("partspouch")
+                || name.equals("container");
+    }
+
+    private static int containerSlots(String name) {
+        return name.equals("container") ? 54 : 9;
+    }
+
+    private static String acceptedContainerItems(String name) {
+        return switch (name) {
+            case "lienwallet" -> "rwbym:lien1,rwbym:lien5,rwbym:lien10,rwbym:lien20,rwbym:lien50,rwbym:lien100,rwbym:lien500";
+            case "dustpouch" -> "rwbym:dustrockhardlight,rwbym:dustcrystalhardlight,rwbym:dustcrystalcut,rwbym:winddustcrystalcut,rwbym:firedustcrystalcut,rwbym:gravitydustcrystalcut,rwbym:waterdustcrystalcut,rwbym:lightdustcrystalcut,rwbym:icedustcrystalcut,rwbym:fireblock,rwbym:gravityblock,rwbym:iceblock,rwbym:impureblock,rwbym:lightblock,rwbym:waterblock,rwbym:windblock,rwbym:dustcrystal,rwbym:winddustcrystal,rwbym:firedustcrystal,rwbym:gravitydustcrystal,rwbym:waterdustcrystal,rwbym:lightdustcrystal,rwbym:icedustcrystal,rwbym:dustrock,rwbym:winddustrock,rwbym:firedustrock,rwbym:gravitydustrock,rwbym:waterdustrock,rwbym:lightdustrock,rwbym:icedustrock,rwbym:dust,rwbym:winddust,rwbym:firedust,rwbym:gravitydust,rwbym:waterdust,rwbym:lightdust,rwbym:icedust";
+            case "partspouch" -> "rwbym:cr1,rwbym:cr2,rwbym:cr3,rwbym:cr4,rwbym:cr5,rwbym:cr6,rwbym:mytre1,rwbym:mytre2,rwbym:mytre3,rwbym:gam1,rwbym:gam2,rwbym:gam3,rwbym:em1,rwbym:em2,rwbym:em3,rwbym:cro1,rwbym:cro2,rwbym:cro3,rwbym:magn1,rwbym:magn2,rwbym:magn3,rwbym:magn4,rwbym:milo1,rwbym:milo2,rwbym:milo3,rwbym:stor1,rwbym:stor2,rwbym:stor3,rwbym:stor4,rwbym:stor5,rwbym:stor6,rwbym:scrap,rwbym:roseiron,rwbym:gildediron,rwbym:frostediron,rwbym:shadowiron,rwbym:viridianiron,rwbym:forestiron";
+            case "container" -> "rwbym:dustrockhardlight,rwbym:dustcrystalhardlight,rwbym:dustcrystalcut,rwbym:winddustcrystalcut,rwbym:firedustcrystalcut,rwbym:gravitydustcrystalcut,rwbym:waterdustcrystalcut,rwbym:lightdustcrystalcut,rwbym:icedustcrystalcut,rwbym:forestironblock,rwbym:frostedironblock,rwbym:gildedironblock,rwbym:roseironblock,rwbym:shadowironblock,rwbym:viridianironblock,rwbym:fireblock,rwbym:gravityblock,rwbym:iceblock,rwbym:impureblock,rwbym:lightblock,rwbym:waterblock,rwbym:windblock,rwbym:dustcrystal,rwbym:winddustcrystal,rwbym:firedustcrystal,rwbym:gravitydustcrystal,rwbym:waterdustcrystal,rwbym:lightdustcrystal,rwbym:icedustcrystal,rwbym:cr1,rwbym:cr2,rwbym:cr3,rwbym:cr4,rwbym:cr5,rwbym:cr6,rwbym:mytre1,rwbym:mytre2,rwbym:mytre3,rwbym:gam1,rwbym:gam2,rwbym:gam3,rwbym:em1,rwbym:em2,rwbym:em3,rwbym:cro1,rwbym:cro2,rwbym:cro3,rwbym:magn1,rwbym:magn2,rwbym:magn3,rwbym:magn4,rwbym:milo1,rwbym:milo2,rwbym:milo3,rwbym:stor1,rwbym:stor2,rwbym:stor3,rwbym:stor4,rwbym:stor5,rwbym:stor6,rwbym:scrap,rwbym:remnants,rwbym:dustrock,rwbym:winddustrock,rwbym:firedustrock,rwbym:gravitydustrock,rwbym:waterdustrock,rwbym:lightdustrock,rwbym:icedustrock,rwbym:dust,rwbym:winddust,rwbym:firedust,rwbym:gravitydust,rwbym:waterdust,rwbym:lightdust,rwbym:icedust,rwbym:lien1,rwbym:lien5,rwbym:lien10,rwbym:lien20,rwbym:lien50,rwbym:lien100,rwbym:lien500,rwbym:roseiron,rwbym:gildediron,rwbym:frostediron,rwbym:shadowiron,rwbym:viridianiron,rwbym:forestiron";
+            default -> "";
+        };
+    }
+
+    private static boolean isFishingWeapon(String name) {
+        return name.equals("kingfisher");
+    }
+
+    private static boolean isGlider(String name) {
+        return name.equals("glider") || name.equals("gliderdeployed");
+    }
+
+    private static boolean isSpecialMagazine(String name) {
+        return name.equals("p90_mag") || name.equals("hecate_mag");
+    }
+
+    private static String magazineAmmoFor(String name) {
+        return name.equals("hecate_mag") ? "rwbym:50bmg" : "rwbym:p90bullet";
+    }
+
+    private static int magazineCapacityFor(String name) {
+        return name.equals("hecate_mag") ? 7 : 50;
+    }
+
     private static boolean isWeaponLike(String name) {
-        if (isAmmoLike(name) || name.startsWith("entity")) {
+        if (isAmmoLike(name) || isInternalModelPart(name)) {
             return false;
         }
         return RWBYMWeaponProfiles.contains(name)
@@ -1122,7 +1324,25 @@ public final class RWBYMItems {
                 || name.endsWith("mace")
                 || name.endsWith("trident")
                 || name.endsWith("boomerang")
-                || name.endsWith("whip");
+                || name.endsWith("whip")
+                || isFishingWeapon(name);
+    }
+
+    private static boolean isInternalModelPart(String name) {
+        return name.startsWith("entity")
+                || name.equals("crescentscy")
+                || name.equals("croceaswd")
+                || name.equals("gambolswd")
+                || name.equals("juaneshield")
+                || name.equals("kkiceshield")
+                || name.equals("lysetteshield")
+                || name.equals("myrteswd")
+                || name.equals("neoumb_open_blade")
+                || name.equals("pyrrhashield")
+                || name.equals("qrowscy")
+                || name.equals("scarletgun")
+                || name.equals("stormflower_vol7gun")
+                || name.equals("wattsshield");
     }
 
     private static boolean isGunLike(String name) {
@@ -1133,6 +1353,38 @@ public final class RWBYMItems {
     }
 
     private static RegistryObject<SoundEvent> shootSoundFor(String name) {
+        switch (name) {
+            case "bonesword", "qrow", "razorbolt":
+                return null;
+            case "chatareus", "chatareusgun", "fetch", "iliasword", "lark", "lucidroserifle",
+                    "lucidrosescythe", "mayaxe", "mayrifle", "neonfire", "neonice", "neonnormal",
+                    "neonwind", "neptunegun", "noctustraumfirescy", "noctustraumgravscy",
+                    "noctustraumicescy", "noctustraumlightscy", "noctustraumnormalscy", "onoyari",
+                    "scarletstormaxe", "sunderaxe", "sunderrifle", "whitefangspear":
+                return RWBYMSounds.CRESCENT_ROSE_SHOOT;
+            case "adamgun", "amesardentgun", "cocogun", "cocogunv", "hadesgun", "hadesgunrecoil",
+                    "hadesscy", "hexen", "hexenaxe", "qrowgun", "scarletstormgun", "vidiangun":
+                return RWBYMSounds.EMBER_CELICA_SHOOT;
+            case "atlaspistol", "cassandragun", "dove", "grimmwhip", "ironwood", "ironwood2",
+                    "magnumgun", "magnumsword", "mariascythe", "mondragon", "noctustraumfire",
+                    "noctustraumgrav", "noctustraumice", "noctustraumlight", "noctustraumnormal",
+                    "nornir", "p90", "tocksword", "wfp":
+                return RWBYMSounds.GAMBOL_SHROUD_SHOOT;
+            case "extasis", "jnrrocket", "timber":
+                return RWBYMSounds.JUNIOR_SHOOT;
+            case "cardin", "corsac", "corsacdouble", "fennec", "fennecdouble", "flynt", "goodwitch",
+                    "heroshield", "hollowtome", "hollowtomefire", "hollowtomegravity", "hollowtomeice",
+                    "hollowtomelightning", "hollowtomewater", "hollowtomewind", "leafshield",
+                    "lionheart", "pickaxeshield", "rageshield":
+                return RWBYMSounds.MYRTENASTER_SHOOT;
+            case "atlasrifle", "pyrrharifle", "scarletsword", "sunnunchuck", "vernal", "whitefangrifle":
+                return RWBYMSounds.PORT_SHOOT;
+            case "emeraldblade", "emeraldgun", "fox", "infinity", "nadirgun", "pennygun", "reesegun",
+                    "tyrian":
+                return RWBYMSounds.STORMFLOWER_SHOOT;
+            default:
+                break;
+        }
         if (name.contains("crescent")) {
             return RWBYMSounds.CRESCENT_ROSE_SHOOT;
         }

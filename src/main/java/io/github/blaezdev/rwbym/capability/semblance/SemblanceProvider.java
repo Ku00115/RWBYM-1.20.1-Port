@@ -27,4 +27,8 @@ public class SemblanceProvider implements ICapabilitySerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag tag) {
         this.instance.deserialize(tag);
     }
+
+    public void invalidate() {
+        this.optional.invalidate();
+    }
 }

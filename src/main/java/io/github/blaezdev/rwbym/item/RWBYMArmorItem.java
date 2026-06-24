@@ -85,12 +85,19 @@ public class RWBYMArmorItem extends ArmorItem {
     private static final UUID[] ATTACK_UUIDS = slotUuids("0f5b7e9c-1dc7-4723-8b89-73ecc43f3fa5");
     private static final UUID[] KNOCKBACK_UUIDS = slotUuids("38fa9005-f5a5-4e0e-b87c-f34df448f3ca");
     private static final UUID[] ATTACK_SPEED_UUIDS = slotUuids("ebe83521-9738-4fb1-9a97-d31a07017ffd");
+    private static final HumanoidModel<?>[] CLIENT_ARMOR_MODELS = new HumanoidModel<?>[EquipmentSlot.values().length * 4];
 
     private final String textureBase;
     private final long perks;
     private final String morphTarget;
     private final String formWeapon;
     private final boolean playerSkinTexture;
+    private final String defaultTexture;
+    private final String slimTexture;
+    private final String layeredTexture;
+    private final String layeredLegTexture;
+    private final ResourceLocation morphTargetId;
+    private final ResourceLocation formWeaponId;
 
     public RWBYMArmorItem(String itemName, ArmorMaterial material, Type type, Properties properties) {
         super(material, type, properties);
@@ -99,6 +106,13 @@ public class RWBYMArmorItem extends ArmorItem {
         this.morphTarget = morphTargetFor(itemName);
         this.formWeapon = formWeaponFor(itemName);
         this.playerSkinTexture = !itemName.startsWith("korekosmou");
+        this.defaultTexture = RWBYM.MOD_ID + ":textures/models/armor/" + this.textureBase + "_default.png";
+        this.slimTexture = RWBYM.MOD_ID + ":textures/models/armor/" + this.textureBase + "_slim.png";
+        this.layeredTexture = RWBYM.MOD_ID + ":textures/models/armor/" + this.textureBase + "_layer_1.png";
+        this.layeredLegTexture = RWBYM.MOD_ID + ":textures/models/armor/"
+                + (this.textureBase.startsWith("korekosmou") ? "korekosmou" : this.textureBase) + "_layer_2.png";
+        this.morphTargetId = this.morphTarget == null ? null : new ResourceLocation(this.morphTarget);
+        this.formWeaponId = this.formWeapon == null ? null : new ResourceLocation(this.formWeapon);
     }
 
     @Override
@@ -108,7 +122,9 @@ public class RWBYMArmorItem extends ArmorItem {
             if (player.tickCount % 40 == 0) {
                 applyPassiveEffects(player);
             }
-            tryCreateKoreKosmouWeapon(stack, player);
+            if (this.formWeaponId != null && player.isShiftKeyDown() && player.swinging) {
+                tryCreateKoreKosmouWeapon(stack, player);
+            }
         }
     }
 
@@ -144,12 +160,11 @@ public class RWBYMArmorItem extends ArmorItem {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (!this.playerSkinTexture) {
-            return RWBYM.MOD_ID + ":textures/models/armor/" + this.textureBase + "_layer_1.png";
+            return slot == EquipmentSlot.LEGS ? this.layeredLegTexture : this.layeredTexture;
         }
-        String modelName = entity instanceof AbstractClientPlayer player && "slim".equals(player.getModelName())
-                ? "slim"
-                : "default";
-        return RWBYM.MOD_ID + ":textures/models/armor/" + this.textureBase + "_" + modelName + ".png";
+        return entity instanceof AbstractClientPlayer player && "slim".equals(player.getModelName())
+                ? this.slimTexture
+                : this.defaultTexture;
     }
 
     @Override
@@ -162,9 +177,8 @@ public class RWBYMArmorItem extends ArmorItem {
                     return original;
                 }
                 boolean slim = entity instanceof AbstractClientPlayer player && "slim".equals(player.getModelName());
-                HumanoidModel<?> model = new RWBYMPlayerArmorModel<>(Minecraft.getInstance().getEntityModels()
-                        .bakeLayer(slim ? RWBYMPlayerArmorModel.SLIM_LAYER : RWBYMPlayerArmorModel.DEFAULT_LAYER),
-                        slim, slot);
+                boolean includeCompanionParts = shouldRenderCompanionParts(entity, slot);
+                HumanoidModel<?> model = getOrCreateArmorModel(slot, slim, includeCompanionParts);
                 copyPose(original, model);
                 if (model instanceof RWBYMPlayerArmorModel<?> playerArmorModel) {
                     playerArmorModel.prepareForArmorRender();
@@ -172,6 +186,45 @@ public class RWBYMArmorItem extends ArmorItem {
                 return model;
             }
         });
+    }
+
+    private HumanoidModel<?> getOrCreateArmorModel(EquipmentSlot slot, boolean slim, boolean includeCompanionParts) {
+        int index = armorModelIndex(slot, slim, includeCompanionParts);
+        HumanoidModel<?> model = CLIENT_ARMOR_MODELS[index];
+        if (model == null) {
+            model = new RWBYMPlayerArmorModel<>(Minecraft.getInstance().getEntityModels()
+                    .bakeLayer(slim ? RWBYMPlayerArmorModel.SLIM_LAYER : RWBYMPlayerArmorModel.DEFAULT_LAYER),
+                    slim, slot, includeCompanionParts);
+            CLIENT_ARMOR_MODELS[index] = model;
+        }
+        return model;
+    }
+
+    private static int armorModelIndex(EquipmentSlot slot, boolean slim, boolean includeCompanionParts) {
+        return slot.ordinal() * 4 + (slim ? 1 : 0) + (includeCompanionParts ? 2 : 0);
+    }
+
+    private boolean shouldRenderCompanionParts(LivingEntity entity, EquipmentSlot slot) {
+        if (slot == EquipmentSlot.HEAD) {
+            return !hasMatchingArmor(entity, EquipmentSlot.CHEST) && !hasMatchingArmor(entity, EquipmentSlot.LEGS);
+        }
+        if (slot == EquipmentSlot.CHEST) {
+            return !hasMatchingArmor(entity, EquipmentSlot.LEGS);
+        }
+        if (slot == EquipmentSlot.LEGS) {
+            return !hasMatchingArmor(entity, EquipmentSlot.CHEST);
+        }
+        if (slot == EquipmentSlot.FEET) {
+            return !hasMatchingArmor(entity, EquipmentSlot.LEGS);
+        }
+        return false;
+    }
+
+    private boolean hasMatchingArmor(LivingEntity entity, EquipmentSlot slot) {
+        ItemStack equipped = entity.getItemBySlot(slot);
+        return equipped.getItem() instanceof RWBYMArmorItem armorItem
+                && armorItem.playerSkinTexture
+                && armorItem.textureBase.equals(this.textureBase);
     }
 
     private static String textureBaseFor(String itemName) {
@@ -216,7 +269,7 @@ public class RWBYMArmorItem extends ArmorItem {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown() && this.morphTarget != null) {
             if (!level.isClientSide()) {
-                Item target = BuiltInRegistries.ITEM.get(new ResourceLocation(this.morphTarget));
+                Item target = BuiltInRegistries.ITEM.get(this.morphTargetId);
                 if (target != stack.getItem()) {
                     ItemStack morphed = new ItemStack(target, stack.getCount());
                     morphed.setTag(stack.getTag() == null ? null : stack.getTag().copy());
@@ -269,7 +322,7 @@ public class RWBYMArmorItem extends ArmorItem {
             return;
         }
 
-        Item weapon = BuiltInRegistries.ITEM.get(new ResourceLocation(this.formWeapon));
+        Item weapon = BuiltInRegistries.ITEM.get(this.formWeaponId);
         if (weapon == Items.AIR) {
             return;
         }
@@ -300,13 +353,6 @@ public class RWBYMArmorItem extends ArmorItem {
                 return true;
             }
         }
-        if (entity instanceof Player player) {
-            for (ItemStack stack : player.getInventory().items) {
-                if (stack.getItem() instanceof BasicCharmItem charm && (charm.getPerks() & perk) != 0L) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -327,7 +373,7 @@ public class RWBYMArmorItem extends ArmorItem {
             case "summerhood" -> MOVEMENTSPEED1|ATTACKBOOST1;
             case "taylorhood" -> REACH1|DEFENSE1;
             case "whtefng" -> MOVEMENTSPEED1;
-            default -> 0L;
+            default -> ARMOR_PERKS.getOrDefault(itemName, 0L);
         };
     }
 

@@ -17,13 +17,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.IntStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer, MenuProvider {
     public static final int INPUT_SLOT = 0;
@@ -33,6 +35,8 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     private static final int[] INPUT_SLOTS = {INPUT_SLOT, TOOL_SLOT};
     private static final int[] FUEL_SLOTS = {FUEL_SLOT};
     private static final int[] OUTPUT_SLOTS = {OUTPUT_SLOT};
+    private static Map<Item, ItemStack> crushRecipes;
+    private static Map<Item, ItemStack> chiselRecipes;
 
     private final net.minecraft.core.NonNullList<ItemStack> items =
             net.minecraft.core.NonNullList.withSize(4, ItemStack.EMPTY);
@@ -87,7 +91,7 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
             ItemStack fuel = crusher.items.get(FUEL_SLOT);
             crusher.maxBurnTime = fuelTime(fuel);
             crusher.burnTime = crusher.maxBurnTime;
-            fuel.shrink(1);
+            crusher.consumeFuel(fuel);
             changed = true;
         }
         if (crusher.burnTime > 0 && crusher.canProcess()) {
@@ -243,8 +247,28 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
             output.grow(result.getCount());
         }
         this.items.get(INPUT_SLOT).shrink(1);
-        this.items.get(TOOL_SLOT).hurt(1, this.level == null ? null : this.level.random, null);
-        if (this.items.get(TOOL_SLOT).getDamageValue() >= this.items.get(TOOL_SLOT).getMaxDamage()) {
+        damageCrusherTool();
+    }
+
+    private void consumeFuel(ItemStack fuel) {
+        ItemStack remaining = fuel.getCraftingRemainingItem();
+        fuel.shrink(1);
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // The 1.12 crusher consumed fuel via getContainerItem, so preserve bucket-style remainders.
+        if (fuel.isEmpty() && !remaining.isEmpty()) {
+            this.items.set(FUEL_SLOT, remaining);
+        }
+    }
+
+    private void damageCrusherTool() {
+        ItemStack tool = this.items.get(TOOL_SLOT);
+        if (tool.isEmpty()) {
+            return;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy crush/chisel were container tools; in 1.20 the same behavior is explicit durability damage.
+        boolean broken = tool.hurt(1, this.level == null ? null : this.level.random, null);
+        if (broken || tool.getDamageValue() >= tool.getMaxDamage()) {
             this.items.set(TOOL_SLOT, ItemStack.EMPTY);
         }
     }
@@ -274,20 +298,56 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         if (input.isEmpty() || !isCrusherTool(tool)) {
             return ItemStack.EMPTY;
         }
-        boolean chisel = idPath(tool).equals("chisel");
-        for (String element : new String[] {"fire", "ice", "water", "wind", "gravity", "light"}) {
-            RegistryObject<Item> oreRock = RWBYMItems.SIMPLE_ITEMS.get(element + "dustrock");
-            RegistryObject<Item> dust = RWBYMItems.SIMPLE_ITEMS.get(element + "dust");
-            if (!chisel && oreRock != null && dust != null && input.is(oreRock.get())) {
-                return new ItemStack(dust.get(), 2);
-            }
-            RegistryObject<Item> crystal = RWBYMItems.SIMPLE_ITEMS.get(element + "dustcrystal");
-            RegistryObject<Item> cut = RWBYMItems.SIMPLE_ITEMS.get(element + "dustcrystalcut");
-            if (chisel && crystal != null && cut != null && input.is(crystal.get())) {
-                return new ItemStack(cut.get());
-            }
+        Map<Item, ItemStack> recipes = idPath(tool).equals("chisel") ? chiselRecipes() : crushRecipes();
+        ItemStack result = recipes.get(input.getItem());
+        return result == null ? ItemStack.EMPTY : result.copy();
+    }
+
+    private static Map<Item, ItemStack> crushRecipes() {
+        if (crushRecipes == null) {
+            crushRecipes = buildCrushRecipes();
         }
-        return ItemStack.EMPTY;
+        return crushRecipes;
+    }
+
+    private static Map<Item, ItemStack> chiselRecipes() {
+        if (chiselRecipes == null) {
+            chiselRecipes = buildChiselRecipes();
+        }
+        return chiselRecipes;
+    }
+
+    private static Map<Item, ItemStack> buildCrushRecipes() {
+        Map<Item, ItemStack> recipes = new HashMap<>();
+        addRecipe(recipes, "dustrock", "dust", 2);
+        for (String element : new String[] {"fire", "ice", "water", "wind", "gravity", "light"}) {
+            addRecipe(recipes, element + "dustrock", element + "dust", 2);
+        }
+        return Map.copyOf(recipes);
+    }
+
+    private static Map<Item, ItemStack> buildChiselRecipes() {
+        Map<Item, ItemStack> recipes = new HashMap<>();
+        addRecipe(recipes, "dustrock", "dustcrystal", 1);
+        addRecipe(recipes, "dustrockhardlight", "dustcrystalhardlight", 1);
+        for (String element : new String[] {"fire", "ice", "water", "wind", "gravity", "light"}) {
+            addRecipe(recipes, element + "dustrock", element + "dustcrystal", 1);
+            addRecipe(recipes, element + "dustcrystal", element + "dustcrystalcut", 1);
+        }
+        addRecipe(recipes, "dustcrystal", "dustcrystalcut", 1);
+        RegistryObject<Item> scrap = RWBYMItems.SIMPLE_ITEMS.get("scrap");
+        if (scrap != null) {
+            recipes.put(scrap.get(), new ItemStack(Items.IRON_NUGGET, 9));
+        }
+        return Map.copyOf(recipes);
+    }
+
+    private static void addRecipe(Map<Item, ItemStack> recipes, String inputName, String outputName, int outputCount) {
+        RegistryObject<Item> input = RWBYMItems.SIMPLE_ITEMS.get(inputName);
+        RegistryObject<Item> output = RWBYMItems.SIMPLE_ITEMS.get(outputName);
+        if (input != null && output != null) {
+            recipes.put(input.get(), new ItemStack(output.get(), outputCount));
+        }
     }
 
     private static boolean isCrusherTool(ItemStack stack) {

@@ -1,0 +1,149 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:remnants"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+          "chance": 1.0,
+          "looting_multiplier": 0.01
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinr",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:bait",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinw",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinb",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coiny",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coin_ren",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinjaune",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coinnora",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:coin_ragora",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:roseiron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:frostediron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:shadowiron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:gildediron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:forestiron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:viridianiron",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:smrgrave",
+          "weight": 5
+        }
+      ]
+    }
+  ]
+}

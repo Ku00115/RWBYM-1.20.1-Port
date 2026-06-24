@@ -1,0 +1,73 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:remnants"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+          "chance": 1.0,
+          "looting_multiplier": 0.5
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:rgrimmarm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:lgrimmarm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:rgrimmleg"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:lgrimmleg"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:grimmhead"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:grimmhorn"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:blackwolfears"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:blackwolftail"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:whitedragontail"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "rwbym:ramhorns"
+        }
+      ]
+    }
+  ]
+}

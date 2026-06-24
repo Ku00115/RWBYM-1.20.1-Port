@@ -18,23 +18,28 @@ public class RWBYMLimbItem extends Item {
 
     private final String name;
     private final String slot;
+    private final String registryName;
 
     public RWBYMLimbItem(String name, String slot, Properties properties) {
         super(properties);
         this.name = name;
         this.slot = slot;
+        this.registryName = new ResourceLocation(RWBYM.MOD_ID, name).toString();
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        if (hand != InteractionHand.MAIN_HAND) {
+            return InteractionResultHolder.fail(stack);
+        }
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        applyAppearance(entity, this.slot, this.name.startsWith("clear") ? "" : registryName());
+        applyAppearance(entity, this.slot, this.name.startsWith("clear") ? "" : this.registryName);
         if (!level.isClientSide()) {
             RWBYMNetwork.syncAppearance(entity);
             if (!(entity instanceof Player player) || !player.getAbilities().instabuild) {
@@ -51,11 +56,6 @@ public class RWBYMLimbItem extends Item {
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BOW;
-    }
-
-    private String registryName() {
-        ResourceLocation id = new ResourceLocation(RWBYM.MOD_ID, this.name);
-        return id.toString();
     }
 
     public static void applyAppearance(LivingEntity entity, String slot, String itemId) {
