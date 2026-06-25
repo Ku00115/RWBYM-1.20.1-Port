@@ -43,6 +43,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
     private boolean pierce;
     private boolean recoverable;
     private boolean fast;
+    private boolean pyrrhaReturning;
     private ItemStack weaponStack = ItemStack.EMPTY;
     private int life;
 
@@ -98,10 +99,13 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         if (this.returning && this.life > 12 && this.getOwner() instanceof LivingEntity owner) {
             Vec3 toOwner = owner.getEyePosition().subtract(this.position());
             if (toOwner.lengthSqr() < 2.25D) {
+                if (this.pyrrhaReturning && owner instanceof Player player) {
+                    giveRecoveredItem(player);
+                }
                 this.discard();
                 return;
             }
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.65D).add(toOwner.normalize().scale(0.35D)));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.65D).add(toOwner.normalize().scale(returnPullStrength())));
         }
         if (this.fast) {
             this.setDeltaMovement(this.getDeltaMovement().scale(1.02D));
@@ -158,6 +162,9 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
             applyBlockImpact(result);
             spawnRagoraShadowBallIfNeeded(result.getLocation().x, result.getLocation().y, result.getLocation().z);
             teleportOwnerIfNeeded();
+            if (!this.returning && startPyrrhaReturnIfPossible()) {
+                return;
+            }
             if (!this.returning) {
                 dropRecoveredItem();
                 this.discard();
@@ -179,6 +186,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         tag.putBoolean("pierce", this.pierce);
         tag.putBoolean("recoverable", this.recoverable);
         tag.putBoolean("fast", this.fast);
+        tag.putBoolean("pyrrhaReturning", this.pyrrhaReturning);
         tag.putInt("life", this.life);
         if (!this.weaponStack.isEmpty()) {
             tag.put("weaponStack", this.weaponStack.save(new CompoundTag()));
@@ -194,6 +202,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         this.pierce = tag.getBoolean("pierce");
         this.recoverable = tag.getBoolean("recoverable");
         this.fast = tag.getBoolean("fast");
+        this.pyrrhaReturning = tag.getBoolean("pyrrhaReturning");
         this.life = tag.getInt("life");
         this.weaponStack = tag.contains("weaponStack") ? ItemStack.of(tag.getCompound("weaponStack")) : ItemStack.EMPTY;
     }
@@ -347,6 +356,53 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
             return;
         }
         this.spawnAtLocation(this.getItem().copyWithCount(1), 0.1F);
+        this.recoverable = false;
+    }
+
+    private boolean startPyrrhaReturnIfPossible() {
+        if (!this.recoverable || !(this.getOwner() instanceof Player player) || player.isSpectator()) {
+            return false;
+        }
+        int level = pyrrhaLevel(player);
+        if (level <= 0 || player.getCapability(RWBYMCapabilities.AURA)
+                .map(aura -> aura.useAura(1.0F, false) > 0.0F)
+                .orElse(true)) {
+            return false;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Original EntityBullet made Pyrrha-owned lodged projectiles no-clip back to the shooter.
+        this.returning = true;
+        this.pyrrhaReturning = true;
+        this.life = Math.max(this.life, 13);
+        this.setNoGravity(true);
+        return true;
+    }
+
+    private int pyrrhaLevel(Player player) {
+        return player.getCapability(RWBYMCapabilities.SEMBLANCE)
+                .map(semblance -> "pyrrha".equals(semblance.getName()) ? Math.min(3, semblance.getLevel()) : 0)
+                .orElse(0);
+    }
+
+    private double returnPullStrength() {
+        if (!this.pyrrhaReturning || !(this.getOwner() instanceof Player player)) {
+            return 0.35D;
+        }
+        return switch (pyrrhaLevel(player)) {
+            case 1 -> 0.25D;
+            case 2 -> 0.50D;
+            default -> 1.0D;
+        };
+    }
+
+    private void giveRecoveredItem(Player player) {
+        if (!this.recoverable || this.getItem().isEmpty()) {
+            return;
+        }
+        ItemStack recovered = this.getItem().copyWithCount(1);
+        if (!player.getInventory().add(recovered)) {
+            player.drop(recovered, false);
+        }
         this.recoverable = false;
     }
 

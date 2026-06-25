@@ -622,10 +622,14 @@ public class RWBYMWeaponItem extends Item {
             }
             ItemStack display = projectileDisplay(stack, ammoShot);
             boolean fastProjectile = isFastProjectileWeapon();
+            boolean recoverableProjectile = ammoShot.recoverable()
+                    || (this.profile.hasType(RWBYMWeaponProfiles.THROWN)
+                            && !this.profile.hasType(RWBYMWeaponProfiles.BOOMERANG)
+                            && !this.profile.name().contains("boomerang"));
             RWBYMProjectileEntity projectile = new RWBYMProjectileEntity(level, player, display, stack,
                     projectileDamage, projectileElementKey(ammoShot, stack),
                     this.profile.hasType(RWBYMWeaponProfiles.BOOMERANG) || this.profile.name().contains("boomerang"),
-                    ammoShot.pierce(), ammoShot.recoverable(), fastProjectile);
+                    ammoShot.pierce(), recoverableProjectile, fastProjectile);
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(),
                     0.0F, projectileSpeed(stack) * power, projectileSpread(level, stack, shotCount));
             level.addFreshEntity(projectile);
