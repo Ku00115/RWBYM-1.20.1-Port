@@ -243,6 +243,7 @@ public class BasicGrimmEntity extends Zombie {
         if (!this.restoredDefaultEquipment) {
             this.restoredDefaultEquipment = true;
             restoreOriginalDefaultEquipment(kind);
+            restoreOriginalExperienceReward(kind);
         }
         copySummonOwnerTarget(kind);
         if (tickArmorgeistInvulnerability(kind)) {
@@ -368,6 +369,15 @@ public class BasicGrimmEntity extends Zombie {
                 && RWBYMItems.SIMPLE_ITEMS.containsKey("armasword")) {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RWBYMItems.SIMPLE_ITEMS.get("armasword").get()));
         }
+    }
+
+    private void restoreOriginalExperienceReward(String kind) {
+        // Original flying Grimm and Geist intentionally paid less XP than EntityMob's default value.
+        this.xpReward = switch (kind) {
+            case "mutantdeathstalker" -> 300;
+            case "geist", "lancer", "nevermore", "giantnevermore", "queenlancer", "ravager", "wyvern" -> 3;
+            default -> this.xpReward;
+        };
     }
 
     public void setSummonOwner(LivingEntity owner) {
