@@ -3,8 +3,10 @@ package io.github.blaezdev.rwbym.entity;
 import io.github.blaezdev.rwbym.registry.RWBYMItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.npc.Villager;
@@ -61,9 +64,12 @@ public class BasicGrimmEntity extends Zombie {
     private boolean restoredDefaultEquipment;
     private int mutantFireballTimer;
     private int armorgeistInvulnerableTicks;
+    private final ServerBossEvent originalDeathstalkerBossEvent =
+            new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS);
 
     public BasicGrimmEntity(EntityType<? extends Zombie> type, Level level) {
         super(type, level);
+        this.originalDeathstalkerBossEvent.setDarkenScreen(true);
     }
 
     @Override
@@ -233,6 +239,7 @@ public class BasicGrimmEntity extends Zombie {
         if (this.level().isClientSide()) {
             return;
         }
+        updateOriginalDeathstalkerBossBar(kind);
         if (!this.restoredDefaultEquipment) {
             this.restoredDefaultEquipment = true;
             restoreOriginalDefaultEquipment(kind);
@@ -277,6 +284,36 @@ public class BasicGrimmEntity extends Zombie {
         this.setDeltaMovement(Vec3.ZERO);
         // Original AIDoNothing locks Arma Gigas while the summon invulnerability timer burns down.
         return true;
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
+        if (hasOriginalDeathstalkerBossBar(this.grimmKind())) {
+            this.originalDeathstalkerBossEvent.addPlayer(player);
+        }
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        if (hasOriginalDeathstalkerBossBar(this.grimmKind())) {
+            this.originalDeathstalkerBossEvent.removePlayer(player);
+        }
+    }
+
+    private void updateOriginalDeathstalkerBossBar(String kind) {
+        if (!hasOriginalDeathstalkerBossBar(kind)) {
+            return;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Original Death Stalker variants declared a purple darkening BossInfoServer; modern mobs need explicit sync.
+        this.originalDeathstalkerBossEvent.setName(this.getDisplayName());
+        this.originalDeathstalkerBossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    private boolean hasOriginalDeathstalkerBossBar(String kind) {
+        return "deathstalker".equals(kind) || "tinyeathstalker".equals(kind);
     }
 
     @Override
