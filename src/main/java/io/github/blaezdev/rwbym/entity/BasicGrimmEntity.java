@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -273,6 +274,22 @@ public class BasicGrimmEntity extends Zombie {
                 tickSummoner(kind);
             }
         }
+    }
+
+    @Override
+    protected void tickDeath() {
+        super.tickDeath();
+        if (!this.level().isClientSide() && hasOriginalDeathTickXp(this.grimmKind())) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Original onDeathUpdate spawned a tiny XP orb every death tick for these large Grimm.
+            this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY() + 0.5D, this.getZ(), 1));
+        }
+    }
+
+    private boolean hasOriginalDeathTickXp(String kind) {
+        return "armorgeist".equals(kind) || "deathstalker".equals(kind) || "giantnevermore".equals(kind)
+                || "goliath".equals(kind) || "nuckleeve".equals(kind) || "queenlancer".equals(kind)
+                || "wyvern".equals(kind);
     }
 
     private boolean tickArmorgeistInvulnerability(String kind) {
