@@ -276,7 +276,7 @@ public class RWBYMWeaponItem extends Item {
         if (this.profile.name().equals("reese")) {
             applyBoardRide(player, stack, 0.5D, 2.0D, 10.0F);
         }
-        if (isAutomaticWeapon()) {
+        if (isAutomaticWeapon() && !isSpecialMagazineGun()) {
             int used = this.getUseDuration(stack) - remainingUseDuration;
             if (used == 1 || used % 3 == 0) {
                 shoot(level, player, player.getUsedItemHand(), stack);
@@ -331,6 +331,11 @@ public class RWBYMWeaponItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
+        if (isSpecialMagazineGun() || isAutomaticWeapon()) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy guns used custom first-person renderers; BOW is the closest vanilla held-use pose for gun fire.
+            return UseAnim.BOW;
+        }
         if (isKineticBoard()) {
             return UseAnim.BOW;
         }
@@ -1378,6 +1383,9 @@ public class RWBYMWeaponItem extends Item {
         if (!down) {
             tag.putBoolean(SPECIAL_GUN_TRIGGER_HELD, false);
             tag.putInt(SPECIAL_GUN_BURST_COUNT, 0);
+            if (player.getUseItem() == stack) {
+                player.stopUsingItem();
+            }
             return;
         }
         if (specialGunMode(tag) == 3) {
@@ -1388,6 +1396,9 @@ public class RWBYMWeaponItem extends Item {
             return;
         }
         tag.putBoolean(SPECIAL_GUN_TRIGGER_HELD, true);
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // SpecialGunActionPacket bypasses vanilla right-click use, so explicitly mark the hand active for first-person pose sync.
+        player.startUsingItem(hand);
         fireSpecialGunOnce(stack, player, hand);
     }
 
