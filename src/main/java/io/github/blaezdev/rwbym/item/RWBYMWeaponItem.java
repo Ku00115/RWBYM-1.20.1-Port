@@ -339,6 +339,10 @@ public class RWBYMWeaponItem extends Item {
         if (isKineticBoard()) {
             return UseAnim.BOW;
         }
+        if (isRanged() && this.profile.charges() && !canBlockOrChannel()) {
+            // Legacy charged guns used custom renderers; BOW avoids the vanilla throw-style first-person pose.
+            return UseAnim.BOW;
+        }
         if (this.profile.hasType(RWBYMWeaponProfiles.BOW) || this.profile.hasType(RWBYMWeaponProfiles.ROCKET)
                 || this.profile.hasType(RWBYMWeaponProfiles.SANREI)
                 || this.profile.hasType(RWBYMWeaponProfiles.LETZT)
