@@ -209,6 +209,9 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     }
 
     private void buildRewards(ServerLevel level) {
+        if (this.waveCount == 17) {
+            return;
+        }
         int commonCount = this.waveCount > 17 ? level.random.nextInt(100) + 5 : level.random.nextInt(20) + 5;
         for (int i = 0; i < commonCount; i++) {
             this.rewards.add(randomCommonReward(level));
@@ -225,7 +228,8 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         addReward(choices, "remnants", level.random.nextInt(3) + 1);
         if (this.waveCount > 17) {
             addReward(choices, "lien500", 1);
-            addReward(choices, "rwbyblock8", 1);
+            // Original reward id rwbyblock8 is the modern toolkit block item.
+            addBlockReward(choices, "toolkit");
         }
         for (String blockName : new String[] {"waterblock", "windblock", "lightblock", "fireblock", "iceblock", "impureblock", "gravityblock"}) {
             addBlockReward(choices, blockName);
