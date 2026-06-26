@@ -1,5 +1,6 @@
 package io.github.blaezdev.rwbym.effect;
 
+import io.github.blaezdev.rwbym.entity.RagoraEntity;
 import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +16,10 @@ public class InstantDamageEffect extends InstantenousMobEffect {
     public void applyInstantenousEffect(Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier,
             double health) {
         if (indirectSource != null && livingEntity == indirectSource) {
+            return;
+        }
+        if (indirectSource instanceof RagoraEntity ragora && livingEntity == ragora.getOwner()) {
+            // Original PotionDamage skipped Ragora's owner so its Dragon Breath clouds stay summon-friendly.
             return;
         }
         DamageSource damageSource = source != null

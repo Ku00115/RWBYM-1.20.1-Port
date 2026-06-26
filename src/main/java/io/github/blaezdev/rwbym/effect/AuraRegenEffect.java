@@ -14,13 +14,18 @@ public class AuraRegenEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
-            player.getCapability(RWBYMCapabilities.AURA).ifPresent(aura -> aura.addAmount(1.0F + amplifier));
+            player.getCapability(RWBYMCapabilities.AURA).ifPresent(aura -> {
+                if (aura.getAmount() < aura.getMaxAura() && aura.getDelay() < 45) {
+                    // Original PotionAuraRegen only bypassed the tail end of the Aura recharge delay.
+                    aura.addAmount(0.35F * Math.max(1, amplifier));
+                }
+            });
         }
     }
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        int interval = Math.max(10, 40 >> amplifier);
-        return duration % interval == 0;
+        int interval = 50 >> amplifier;
+        return interval > 0 ? duration % interval == 0 : true;
     }
 }
