@@ -237,6 +237,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
         }
         explodeIfNeeded(this.getX(), this.getY(), this.getZ(), Level.ExplosionInteraction.NONE);
+        RWBYMWeaponItem.applyLegacyExplosionTargetEffects(target, this.element);
         spawnPotionCloudIfNeeded(target.getX(), target.getY(), target.getZ());
     }
 

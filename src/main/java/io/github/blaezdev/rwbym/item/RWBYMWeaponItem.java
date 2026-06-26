@@ -1033,7 +1033,22 @@ public class RWBYMWeaponItem extends Item {
         if (explosionPower != null) {
             target.level().explode(target, target.getX(), target.getY(), target.getZ(), explosionPower,
                     Level.ExplosionInteraction.NONE);
+            applyLegacyExplosionTargetEffects(target, element);
         }
+    }
+
+    public static void applyLegacyExplosionTargetEffects(LivingEntity target, String element) {
+        if (explosionPower(element) == null || !(target instanceof Player player)) {
+            return;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Original ExplosionAmmoHit empowered Nora when she was struck by an explosive ammo impact.
+        player.getCapability(RWBYMCapabilities.SEMBLANCE).ifPresent(semblance -> {
+            if ("nora".equals(semblance.getName())) {
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 360, 16, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 360, 9, false, false));
+            }
+        });
     }
 
     private String elementKey() {
