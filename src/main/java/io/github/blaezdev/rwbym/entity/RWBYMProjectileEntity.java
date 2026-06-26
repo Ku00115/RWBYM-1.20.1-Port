@@ -236,7 +236,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
             target.setSecondsOnFire(4);
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
         }
-        explodeIfNeeded(this.getX(), this.getY(), this.getZ());
+        explodeIfNeeded(this.getX(), this.getY(), this.getZ(), Level.ExplosionInteraction.NONE);
         spawnPotionCloudIfNeeded(target.getX(), target.getY(), target.getZ());
     }
 
@@ -273,7 +273,9 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
     }
 
     private void applyBlockImpact(BlockHitResult result) {
-        explodeIfNeeded(result.getLocation().x, result.getLocation().y, result.getLocation().z);
+        // Original ExplosionAmmoHit respected mobGriefing only for block impacts, not entity impacts.
+        explodeIfNeeded(result.getLocation().x, result.getLocation().y, result.getLocation().z,
+                Level.ExplosionInteraction.MOB);
         if (this.element.contains("fire")) {
             net.minecraft.core.BlockPos firePos = result.getBlockPos().relative(result.getDirection());
             BlockState fire = Blocks.FIRE.defaultBlockState();
@@ -406,7 +408,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         this.recoverable = false;
     }
 
-    private void explodeIfNeeded(double x, double y, double z) {
+    private void explodeIfNeeded(double x, double y, double z, Level.ExplosionInteraction interaction) {
         String explosionElement = this.element;
         if (this.element.contains("rocket") || this.element.contains("grenade")) {
             explosionElement += " explosion";
@@ -415,7 +417,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         if (power == null) {
             return;
         }
-        this.level().explode(this, x, y, z, power, Level.ExplosionInteraction.NONE);
+        this.level().explode(this, x, y, z, power, interaction);
         if (power == 0.0F && this.level() instanceof ServerLevel serverLevel) {
             // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
             // Forge 1.20.1 zero-power explosions are easy to miss, so preserve the old hit feedback visually.

@@ -1936,13 +1936,21 @@ public class RWBYMWeaponItem extends Item {
             return AmmoShot.EMPTY;
         }
         String path = id.contains(":") ? id.substring(id.indexOf(':') + 1) : id;
-        String element = "";
         float baseDamage = ammoBaseDamage(path);
         boolean pierce = path.contains("hadesmag")
                 || path.contains("carminestaffammo")
                 || path.contains("pyrrhaspear")
                 || path.contains("hardlightmagazines");
         boolean recoverable = isRecoverableAmmo(path);
+        String element = legacyAmmoElementKey(path);
+        return new AmmoShot(id, element, baseDamage, pierce, recoverable);
+    }
+
+    public static String legacyAmmoElementKey(String path) {
+        if (path == null || path.isBlank()) {
+            return "";
+        }
+        String element = "";
         if (path.contains("fire") || path.contains("firedust")) {
             element += " fire";
         }
@@ -1961,28 +1969,9 @@ public class RWBYMWeaponItem extends Item {
         if (path.contains("light") || path.contains("electric") || path.contains("thunder")) {
             element += " light";
         }
-        if (path.contains("flare") || path.contains("lightdust") || path.contains("electricmag")
-                || path.contains("boltlight")) {
-            element += " explosion0";
-        }
-        if (path.contains("jnrammo") || path.contains("neptammo") || path.contains("gwen")) {
-            element += " explosion1";
-        }
-        if (path.contains("gravitydustcut")) {
-            element += " explosion2";
-        }
-        if (path.contains("magnammo") || path.contains("magnaampammo")) {
-            element += " explosion3";
-        }
-        if (path.endsWith("dustcut") || path.contains("winddustcut") || path.contains("waterdustcut")
-                || path.contains("firedustcut") || path.contains("lightdustcut") || path.contains("icedustcut")) {
-            element += " explosion3";
-        }
-        if (path.contains("extasisammo")) {
-            element += " explosion4";
-        }
-        if (path.contains("letztammo")) {
-            element += " explosion10";
+        String explosion = legacyExplosionElement(path);
+        if (!explosion.isEmpty()) {
+            element += " " + explosion;
         }
         if (path.contains("thundergod")) {
             element += " flyingthundergod";
@@ -1994,7 +1983,23 @@ public class RWBYMWeaponItem extends Item {
                 || path.equals("waterdustcrystal") || path.equals("waterdust")) {
             element += " absorption";
         }
-        return new AmmoShot(id, element.trim(), baseDamage, pierce, recoverable);
+        return element.trim();
+    }
+
+    private static String legacyExplosionElement(String path) {
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy RWBYAmmoItem attached ExplosionAmmoHit per ammo id, so exact ids cover effects name parsing misses.
+        return switch (path) {
+            case "lightdustcrystal", "noctulight", "spllight", "emflareammo", "crelectricmag",
+                    "hadesmag", "hardlightmagazines", "lightdust", "chatelectricmag", "boltlight" -> "explosion0";
+            case "jnrammo", "neptammo", "gwen" -> "explosion1";
+            case "gravitydustcut" -> "explosion2";
+            case "magnammo", "magnaampammo", "winddustcut", "waterdustcut", "firedustcut",
+                    "dustcut", "lightdustcut", "icedustcut" -> "explosion3";
+            case "extasisammo" -> "explosion4";
+            case "letztammo" -> "explosion10";
+            default -> "";
+        };
     }
 
     private static float ammoBaseDamage(String path) {

@@ -114,22 +114,6 @@ public class BasicGunItem extends BasicWeaponItem {
     private static String ammoElement(ItemStack ammo) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(ammo.getItem());
         String path = id == null ? "" : id.getPath();
-        String element = "";
-        if (path.contains("fire")) {
-            element += " fire";
-        }
-        if (path.contains("ice")) {
-            element += " ice";
-        }
-        if (path.contains("grav")) {
-            element += " grav";
-        }
-        if (path.contains("wind")) {
-            element += " wind";
-        }
-        if (path.contains("light") || path.contains("electric")) {
-            element += " light";
-        }
-        return element.trim();
+        return RWBYMWeaponItem.legacyAmmoElementKey(path);
     }
 }
