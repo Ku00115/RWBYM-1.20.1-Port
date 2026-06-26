@@ -10,14 +10,31 @@ import net.minecraft.world.entity.Mob;
 
 public class LegacyGrimmRenderer<T extends Mob> extends MobRenderer<T, ModelBase<T>> {
     private final ResourceLocation texture;
-    private final float scale;
+    private final float scaleX;
+    private final float scaleY;
+    private final float scaleZ;
+    private final float translateX;
+    private final float translateY;
+    private final float translateZ;
 
     @SuppressWarnings("unchecked")
     public LegacyGrimmRenderer(EntityRendererProvider.Context context, ModelBase<?> model, ResourceLocation texture,
             float scale, float shadowRadius) {
+        this(context, model, texture, scale, scale, scale, 0.0F, 0.0F, 0.0F, shadowRadius);
+    }
+
+    @SuppressWarnings("unchecked")
+    public LegacyGrimmRenderer(EntityRendererProvider.Context context, ModelBase<?> model, ResourceLocation texture,
+            float scaleX, float scaleY, float scaleZ, float translateX, float translateY, float translateZ,
+            float shadowRadius) {
         super(context, (ModelBase<T>) model, shadowRadius);
         this.texture = texture;
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
+        this.translateX = translateX;
+        this.translateY = translateY;
+        this.translateZ = translateZ;
     }
 
     @Override
@@ -27,10 +44,13 @@ public class LegacyGrimmRenderer<T extends Mob> extends MobRenderer<T, ModelBase
 
     @Override
     protected void scale(T entity, PoseStack poseStack, float partialTick) {
-        float actualScale = scale;
+        float ragoraScale = 1.0F;
         if (entity instanceof RagoraEntity ragora) {
-            actualScale *= ragora.getRenderScale();
+            ragoraScale = ragora.getRenderScale();
         }
-        poseStack.scale(actualScale, actualScale, actualScale);
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy renderers used per-axis preRenderCallback transforms; keep them data-driven in 1.20.
+        poseStack.scale(this.scaleX * ragoraScale, this.scaleY * ragoraScale, this.scaleZ * ragoraScale);
+        poseStack.translate(this.translateX, this.translateY, this.translateZ);
     }
 }

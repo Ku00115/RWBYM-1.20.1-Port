@@ -82,23 +82,23 @@ public final class RWBYMClientEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RWBYMEntityTypes.BEOWOLF.get(),
-                context -> grimmRenderer(context, new ModelBeowolf(), "beowolf", 0.8F, 0.55F));
+                context -> grimmRenderer(context, new ModelBeowolf(), "beowolf", 1.0F, 0.55F));
         event.registerEntityRenderer(RWBYMEntityTypes.URSA.get(),
-                context -> grimmRenderer(context, new ModelUrsa(), "ursa", 0.85F, 0.8F));
+                context -> grimmRenderer(context, new ModelUrsa(), "ursa", 1.5F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.BOARBATUSK.get(),
-                context -> grimmRenderer(context, new ModelBoarbatusk(), "boarbatusk", 0.75F, 0.55F));
+                context -> grimmRenderer(context, new ModelBoarbatusk(), "boarbatusk", 1.5F, 0.55F));
         event.registerEntityRenderer(RWBYMEntityTypes.CREEP.get(),
-                context -> grimmRenderer(context, new ModelCreep(), "creep", 0.8F, 0.5F));
+                context -> grimmRenderer(context, new ModelCreep(), "creep", 1.3F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.SABYR.get(),
-                context -> grimmRenderer(context, new ModelSabyr(), "sabyr", 0.55F, 0.65F));
+                context -> grimmRenderer(context, new ModelSabyr(), "sabyr", 0.5F, 0.65F));
         event.registerEntityRenderer(RWBYMEntityTypes.BERINGLE.get(),
-                context -> grimmRenderer(context, new ModelBeringle(), "beringle", 0.85F, 0.85F));
+                context -> grimmRenderer(context, new ModelBeringle(), "beringle", 0.5F, 0.85F));
         event.registerEntityRenderer(RWBYMEntityTypes.APATHY.get(),
-                context -> grimmRenderer(context, new ModelApathy(), "apathy", 0.8F, 0.45F));
+                context -> grimmRenderer(context, new ModelApathy(), "apathy", 0.425F, 0.45F));
         event.registerEntityRenderer(RWBYMEntityTypes.DEATHSTALKER.get(),
-                context -> grimmRenderer(context, new ModelDeathStalker(), "deathstalker", 0.7F, 0.85F));
+                context -> grimmRenderer(context, new ModelDeathStalker(), "deathstalker", 2.5F, 0.0F, -0.2F, 0.0F, 0.85F));
         event.registerEntityRenderer(RWBYMEntityTypes.LANCER.get(),
-                context -> grimmRenderer(context, new ModelLancer(), "lancer", 0.55F, 0.35F));
+                context -> grimmRenderer(context, new ModelLancer(), "lancer", 1.0F, 0.35F));
         registerTexturedGrimmRenderers(event);
         registerNpcRenderers(event);
         event.registerEntityRenderer(RWBYMEntityTypes.PROJECTILES.get(), ThrownItemRenderer::new);
@@ -138,74 +138,89 @@ public final class RWBYMClientEvents {
                 new ResourceLocation(RWBYM.MOD_ID, "textures/entity/" + name + ".png"), scale, shadowRadius);
     }
 
+    private static <T extends Mob> LegacyGrimmRenderer<T> grimmRenderer(
+            net.minecraft.client.renderer.entity.EntityRendererProvider.Context context, ModelBase<?> model, String name,
+            float scale, float translateX, float translateY, float translateZ, float shadowRadius) {
+        return grimmRenderer(context, model, name, scale, scale, scale, translateX, translateY, translateZ, shadowRadius);
+    }
+
+    private static <T extends Mob> LegacyGrimmRenderer<T> grimmRenderer(
+            net.minecraft.client.renderer.entity.EntityRendererProvider.Context context, ModelBase<?> model, String name,
+            float scaleX, float scaleY, float scaleZ, float translateX, float translateY, float translateZ,
+            float shadowRadius) {
+        return new LegacyGrimmRenderer(context, model,
+                new ResourceLocation(RWBYM.MOD_ID, "textures/entity/" + name + ".png"),
+                scaleX, scaleY, scaleZ, translateX, translateY, translateZ, shadowRadius);
+    }
+
     private static void registerTexturedGrimmRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RWBYMEntityTypes.WINTER_BEOWOLF.get(),
-                context -> grimmRenderer(context, new ModelWinterbeowolf(), "winter_beowolf", 0.9F, 0.6F));
+                context -> grimmRenderer(context, new ModelWinterbeowolf(), "winter_beowolf", 1.0F, 0.6F));
         event.registerEntityRenderer(RWBYMEntityTypes.WINTER_URSA.get(),
-                context -> grimmRenderer(context, new ModelUrsa(), "winter_ursa", 1.0F, 0.9F));
+                context -> grimmRenderer(context, new ModelUrsa(), "winter_ursa", 1.5F, 0.9F));
         event.registerEntityRenderer(RWBYMEntityTypes.URSA_MAJOR.get(),
-                context -> grimmRenderer(context, new ModelUrsaMajor(), "ursa", 1.45F, 1.2F));
+                context -> grimmRenderer(context, new ModelUrsaMajor(), "ursa", 1.5F, 1.2F));
         event.registerEntityRenderer(RWBYMEntityTypes.WINTER_BOARBATUSK.get(),
-                context -> grimmRenderer(context, new ModelBoarbatusk(), "winter_boarbatusk", 0.75F, 0.55F));
+                context -> grimmRenderer(context, new ModelBoarbatusk(), "winter_boarbatusk", 1.5F, 0.55F));
         event.registerEntityRenderer(RWBYMEntityTypes.MUTANT_DEATHSTALKER.get(),
-                context -> grimmRenderer(context, new ModelMutantDeathStalker(), "deathstalkermutant", 1.3F, 1.1F));
+                context -> grimmRenderer(context, new ModelMutantDeathStalker(), "deathstalkermutant", 2.5F, 0.0F, -0.2F, 0.0F, 1.1F));
         event.registerEntityRenderer(RWBYMEntityTypes.TINY_DEATHSTALKER.get(),
-                context -> grimmRenderer(context, new ModelDeathStalker(), "deathstalker", 0.55F, 0.45F));
+                context -> grimmRenderer(context, new ModelDeathStalker(), "deathstalker", 0.3F, 0.0F, -0.2F, 0.0F, 0.45F));
         event.registerEntityRenderer(RWBYMEntityTypes.QUEEN_LANCER.get(),
-                context -> grimmRenderer(context, new ModelLancer(), "lancer", 1.4F, 0.8F));
+                context -> grimmRenderer(context, new ModelLancer(), "lancer", 5.0F, 3.0F, 5.0F, 0.0F, 0.5F, 0.0F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.GOLIATH.get(),
-                context -> grimmRenderer(context, new ModelGoliath(), "goliath", 2.2F, 1.6F));
+                context -> grimmRenderer(context, new ModelGoliath(), "goliath", 4.5F, 1.6F));
         event.registerEntityRenderer(RWBYMEntityTypes.NEVERMORE.get(),
-                context -> grimmRenderer(context, new ModelNeverMore(), "nevermore", 1.1F, 0.9F));
+                context -> grimmRenderer(context, new ModelNeverMore(), "nevermore", 0.2F, 0.9F));
         event.registerEntityRenderer(RWBYMEntityTypes.GIANT_NEVERMORE.get(),
-                context -> grimmRenderer(context, new ModelNeverMore(), "nevermore", 2.4F, 1.8F));
+                context -> grimmRenderer(context, new ModelNeverMore(), "nevermore", 2.0F, 0.0F, 2.0F, 0.0F, 1.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.ARMORGEIST.get(),
-                context -> grimmRenderer(context, new ModelGeist(), "armorgeist", 1.2F, 0.8F));
+                context -> grimmRenderer(context, new ModelGeist(), "armorgeist", 3.0F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.WINTER_ARMORGEIST.get(),
-                context -> grimmRenderer(context, new ModelGeist(), "winter_armorgeist", 1.2F, 0.8F));
+                context -> grimmRenderer(context, new ModelGeist(), "winter_armorgeist", 1.5F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.GEIST.get(),
-                context -> grimmRenderer(context, new ModelGeist(), "geist", 0.9F, 0.7F));
+                context -> grimmRenderer(context, new ModelGeist(), "geist", 0.75F, 0.7F));
         event.registerEntityRenderer(RWBYMEntityTypes.NUCKLEEVE.get(),
-                context -> grimmRenderer(context, new ModelNuckleeve(), "nuckleeve", 1.4F, 1.0F));
+                context -> grimmRenderer(context, new ModelNuckleeve(), "nuckleeve", 1.5F, 1.0F));
         event.registerEntityRenderer(RWBYMEntityTypes.WYVERN.get(),
-                context -> grimmRenderer(context, new ModelWyvern(), "wyvern", 2.6F, 2.0F));
+                context -> grimmRenderer(context, new ModelWyvern(), "wyvern", 3.5F, 0.0F, 1.5F, 0.0F, 2.0F));
         event.registerEntityRenderer(RWBYMEntityTypes.RAVAGER.get(),
-                context -> grimmRenderer(context, new ModelRavager(), "wyvern", 0.8F, 0.6F));
+                context -> grimmRenderer(context, new ModelRavager(), "wyvern", 0.5F, 0.5F, 0.55F, 0.0F, 0.0F, 0.0F, 0.6F));
         event.registerEntityRenderer(RWBYMEntityTypes.SEER.get(),
-                context -> grimmRenderer(context, new ModelSeer(), "seer", 0.8F, 0.6F));
+                context -> grimmRenderer(context, new ModelSeer(), "seer", 0.1F, 0.0F, -0.3F, 0.0F, 0.6F));
         event.registerEntityRenderer(RWBYMEntityTypes.ARACHNE.get(),
-                context -> grimmRenderer(context, new ModelArachne(), "arachne", 0.9F, 0.8F));
+                context -> grimmRenderer(context, new ModelArachne(), "arachne", 0.2F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.ARACHNE_CLONE.get(),
-                context -> grimmRenderer(context, new ModelArachne(), "blake", 0.9F, 0.8F));
+                context -> grimmRenderer(context, new ModelBlake(), "blake", 1.0F, 0.8F));
         event.registerEntityRenderer(RWBYMEntityTypes.HOLLOW.get(),
-                context -> grimmRenderer(context, new ModelHollow(), "hollow", 0.9F, 0.7F));
+                context -> grimmRenderer(context, new ModelHollow(), "hollow", 0.325F, 0.7F));
     }
 
     private static void registerNpcRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RWBYMEntityTypes.ATLAS_KNIGHT.get(),
-                context -> grimmRenderer(context, new ModelAtlasKnight(), "atlasknight", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelAtlasKnight(), "atlasknight", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.BLAKE.get(),
-                context -> grimmRenderer(context, new ModelBlake(), "blake", 0.9F, 0.5F));
+                context -> grimmRenderer(context, new ModelBlake(), "blake", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.BLAKE_FIRE.get(),
-                context -> grimmRenderer(context, new ModelBlake(), "blakefire", 0.9F, 0.5F));
+                context -> grimmRenderer(context, new ModelBlake(), "blakefire", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.BLAKE_ICE.get(),
-                context -> grimmRenderer(context, new ModelBlake(), "blakeice", 0.9F, 0.5F));
+                context -> grimmRenderer(context, new ModelBlake(), "blakeice", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.STORE.get(),
-                context -> grimmRenderer(context, new ModelStore(), "shop", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelStore(), "shop", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.WEAPON_STORE.get(),
-                context -> grimmRenderer(context, new ModelStore(), "wepshop", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelStore(), "wepshop", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.BLACK_STORE.get(),
-                context -> grimmRenderer(context, new ModelStore(), "whitefang", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelStore(), "whitefang", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.ARMOR_STORE.get(),
-                context -> grimmRenderer(context, new ModelStore(), "armshop", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelStore(), "armshop", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.CROWBAR.get(),
-                context -> grimmRenderer(context, new ModelBlake(), "crowbar", 0.95F, 0.5F));
+                context -> grimmRenderer(context, new ModelBlake(), "crowbar", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.REN.get(),
-                context -> grimmRenderer(context, new ModelBlake(), "ren", 0.9F, 0.5F));
+                context -> grimmRenderer(context, new ModelBlake(), "ren", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.RAGORA.get(),
-                context -> grimmRenderer(context, new ModelRagora(), "modelragora", 0.9F, 0.5F));
+                context -> grimmRenderer(context, new ModelRagora(), "modelragora", 1.0F, 0.5F));
         event.registerEntityRenderer(RWBYMEntityTypes.ZWEI.get(),
-                context -> grimmRenderer(context, new ModelZwei(), "zwei", 0.45F, 0.35F));
+                context -> grimmRenderer(context, new ModelZwei(), "zwei", 1.0F, 0.0F, 0.15F, 0.0F, 0.35F));
     }
 
     private static void registerTexturedGrimm(EntityRenderersEvent.RegisterRenderers event,
