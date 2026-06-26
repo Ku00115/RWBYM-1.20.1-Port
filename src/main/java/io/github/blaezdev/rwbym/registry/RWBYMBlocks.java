@@ -86,7 +86,7 @@ public final class RWBYMBlocks {
         if ("lantern".equals(name) || name.endsWith("block")) {
             properties.lightLevel(state -> "lantern".equals(name) ? 14 : 0);
         }
-        if ("bait".equals(name) || "crusher".equals(name)) {
+        if ("bait".equals(name) || "crusher".equals(name) || "toolkit".equals(name)) {
             properties.noOcclusion();
         }
 
@@ -135,10 +135,16 @@ public final class RWBYMBlocks {
         if ("lantern".equals(name) || "bait".equals(name)) {
             return 0.3F;
         }
+        if ("toolkit".equals(name)) {
+            return 5.0F;
+        }
         return 2.0F;
     }
 
     private static float resistance(String name) {
+        if ("toolkit".equals(name)) {
+            return 15.0F;
+        }
         if (name.endsWith("block")) {
             return 6.0F;
         }
