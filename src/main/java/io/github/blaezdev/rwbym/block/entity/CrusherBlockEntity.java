@@ -216,9 +216,9 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return switch (slot) {
-            case INPUT_SLOT -> crushedResult(stack, this.items.get(TOOL_SLOT)).isEmpty()
-                    ? isDustInput(stack)
-                    : true;
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy slot 0 accepted any input; the recipe table decides later whether the stack can process.
+            case INPUT_SLOT -> true;
             case TOOL_SLOT -> isCrusherTool(stack);
             case FUEL_SLOT -> isFuel(stack);
             default -> false;
@@ -353,11 +353,6 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     private static boolean isCrusherTool(ItemStack stack) {
         String path = idPath(stack);
         return path.equals("crush") || path.equals("chisel");
-    }
-
-    private static boolean isDustInput(ItemStack stack) {
-        String path = idPath(stack);
-        return path.endsWith("dustrock") || path.endsWith("dustcrystal");
     }
 
     private static String idPath(ItemStack stack) {
