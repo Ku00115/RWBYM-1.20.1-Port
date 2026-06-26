@@ -29,6 +29,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -65,6 +69,12 @@ public class Semblance implements ISemblance {
     private static final float JAUNE_TRANSFER = 0.15F;
     private static final float HARRIET_DRAIN = 0.05F;
     private static final int HARRIET_SPEED_MULTIPLIER = 5;
+
+    private static final UUID DUST_SPEED_MODIFIER = UUID.fromString("8d07e08c-c9b3-4e52-b499-8d36f4be8ca0");
+    private static final UUID DUST_ARMOR_MODIFIER = UUID.fromString("fdc03815-3173-4e9c-9e9d-0812588b5637");
+    private static final UUID DUST_HEALTH_MODIFIER = UUID.fromString("107f8be6-056f-4d55-8e5d-f9f6b37a2c18");
+    private static final UUID DUST_ATTACK_MODIFIER = UUID.fromString("eb264e05-eb9e-4324-9bd3-b99d7c96dfc6");
+    private static final UUID DUST_ATTACK_SPEED_MODIFIER = UUID.fromString("fc53ab3d-2b6a-46ba-a944-e060b74495d7");
 
     private static final int RAGORA_MAX_LEVEL = 4;
     private static final int RAGORA_SUMMON_TIME = 100;
@@ -107,6 +117,7 @@ public class Semblance implements ISemblance {
      */
     @Override
     public void tick(Player player) {
+        tickDustSemblanceModifiers(player);
         if ("ragora".equals(this.name)) {
             tickRagora(player);
             return;
@@ -885,6 +896,142 @@ public class Semblance implements ISemblance {
         }
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         return id == null ? "" : id.getPath();
+    }
+
+    /**
+     * Re-applies Semblance-specific Dust offhand attribute overrides from the original RWBYAmmoItem.
+     *
+     * <p>Linked file: {@code RWBYMAmmoItem.java} supplies the base offhand Dust modifiers. Hazel and
+     * Nora alter those values per-player, so the 1.20.1 port layers transient player modifiers here.</p>
+     */
+    private void tickDustSemblanceModifiers(Player player) {
+        clearDustSemblanceModifiers(player);
+        String element = dustElement(player.getOffhandItem());
+        if (element.isEmpty()) {
+            return;
+        }
+        if ("hazel".equals(this.name)) {
+            applyHazelDustModifiers(player, element);
+        } else if ("nora".equals(this.name)) {
+            applyNoraDustModifiers(player, element);
+        }
+    }
+
+    private void applyHazelDustModifiers(Player player, String element) {
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Original Hazel removes Dust penalties and strengthens the matching beneficial stat.
+        switch (element) {
+            case "water" -> addDustModifier(player, Attributes.ATTACK_DAMAGE, DUST_ATTACK_MODIFIER,
+                    0.25D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            case "impure", "gravity" -> addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                    0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            case "wind" -> {
+                addDustModifier(player, Attributes.MOVEMENT_SPEED, DUST_SPEED_MODIFIER,
+                        0.2D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                        0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            }
+            case "fire" -> {
+                addDustModifier(player, Attributes.ATTACK_DAMAGE, DUST_ATTACK_MODIFIER,
+                        0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                        0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            }
+            case "lightning" -> {
+                addDustModifier(player, Attributes.MOVEMENT_SPEED, DUST_SPEED_MODIFIER,
+                        0.2D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                        0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.ATTACK_SPEED, DUST_ATTACK_SPEED_MODIFIER,
+                        0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            }
+            case "ice" -> {
+                addDustModifier(player, Attributes.MOVEMENT_SPEED, DUST_SPEED_MODIFIER,
+                        0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                        0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            }
+            case "hardlight" -> {
+                addDustModifier(player, Attributes.MOVEMENT_SPEED, DUST_SPEED_MODIFIER,
+                        0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.ARMOR, DUST_ARMOR_MODIFIER,
+                        0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                addDustModifier(player, Attributes.ATTACK_DAMAGE, DUST_ATTACK_MODIFIER,
+                        0.2D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            }
+            default -> {
+            }
+        }
+    }
+
+    private void applyNoraDustModifiers(Player player, String element) {
+        if ("ice".equals(element)) {
+            return;
+        }
+        double healthCompensation = switch (element) {
+            case "lightning" -> 0.15D;
+            case "impure", "wind", "fire", "gravity" -> 0.25D;
+            default -> 0.0D;
+        };
+        if (healthCompensation > 0.0D) {
+            // Original Nora halves non-ice negative health penalties from held Dust.
+            addDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER,
+                    healthCompensation, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        }
+    }
+
+    private void clearDustSemblanceModifiers(Player player) {
+        removeDustModifier(player, Attributes.MOVEMENT_SPEED, DUST_SPEED_MODIFIER);
+        removeDustModifier(player, Attributes.ARMOR, DUST_ARMOR_MODIFIER);
+        removeDustModifier(player, Attributes.MAX_HEALTH, DUST_HEALTH_MODIFIER);
+        removeDustModifier(player, Attributes.ATTACK_DAMAGE, DUST_ATTACK_MODIFIER);
+        removeDustModifier(player, Attributes.ATTACK_SPEED, DUST_ATTACK_SPEED_MODIFIER);
+    }
+
+    private void addDustModifier(Player player, Attribute attribute, UUID uuid, double amount,
+            AttributeModifier.Operation operation) {
+        AttributeInstance instance = player.getAttribute(attribute);
+        if (instance != null && amount != 0.0D) {
+            instance.removeModifier(uuid);
+            instance.addTransientModifier(new AttributeModifier(uuid, "RWBYM Semblance Dust adjustment",
+                    amount, operation));
+        }
+    }
+
+    private void removeDustModifier(Player player, Attribute attribute, UUID uuid) {
+        AttributeInstance instance = player.getAttribute(attribute);
+        if (instance != null) {
+            instance.removeModifier(uuid);
+        }
+    }
+
+    private String dustElement(ItemStack stack) {
+        String path = itemPath(stack);
+        if (path.contains("hardlight")) {
+            return "hardlight";
+        }
+        if (path.contains("water")) {
+            return "water";
+        }
+        if (path.equals("dust") || path.equals("dustcrystal") || path.equals("dustrock")) {
+            return "impure";
+        }
+        if (path.contains("wind")) {
+            return "wind";
+        }
+        if (path.contains("fire")) {
+            return "fire";
+        }
+        if (path.contains("gravity") || path.contains("grav")) {
+            return "gravity";
+        }
+        if (path.contains("light") || path.contains("electric") || path.contains("flare")) {
+            return "lightning";
+        }
+        if (path.contains("ice")) {
+            return "ice";
+        }
+        return "";
     }
 
     /**
