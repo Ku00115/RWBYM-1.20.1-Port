@@ -2,7 +2,9 @@ package io.github.blaezdev.rwbym.entity;
 
 import io.github.blaezdev.rwbym.registry.RWBYMItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundEvent;
@@ -297,6 +299,18 @@ public class BasicGrimmEntity extends Zombie {
             return false;
         }
         --this.armorgeistInvulnerableTicks;
+        if (this.level() instanceof ServerLevel serverLevel) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Mirror the legacy SPELL_MOB aura while Arma Gigas is locked in its summon invulnerability.
+            serverLevel.sendParticles(ParticleTypes.ENTITY_EFFECT,
+                    this.getX() + this.random.nextGaussian(),
+                    this.getY() + this.random.nextFloat() * 3.3F,
+                    this.getZ() + this.random.nextGaussian(),
+                    3, 0.35D, 0.35D, 0.45D, 0.0D);
+        }
+        if (this.armorgeistInvulnerableTicks == 0) {
+            this.level().levelEvent(1023, this.blockPosition(), 0);
+        }
         this.setTarget(null);
         this.getNavigation().stop();
         this.setDeltaMovement(Vec3.ZERO);
