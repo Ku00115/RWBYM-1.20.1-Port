@@ -19,8 +19,6 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -418,13 +416,7 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
         if (power == null) {
             return;
         }
-        this.level().explode(this, x, y, z, power, interaction);
-        if (power == 0.0F && this.level() instanceof ServerLevel serverLevel) {
-            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-            // Forge 1.20.1 zero-power explosions are easy to miss, so preserve the old hit feedback visually.
-            serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-            serverLevel.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0F, 1.0F);
-        }
+        RWBYMWeaponItem.createLegacyExplosion(this.level(), this, x, y, z, power, interaction);
     }
 
     private boolean isRagoraFireball() {

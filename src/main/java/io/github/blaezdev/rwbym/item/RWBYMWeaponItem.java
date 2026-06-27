@@ -689,6 +689,24 @@ public class RWBYMWeaponItem extends Item {
                 player.getCapability(RWBYMCapabilities.AURA).ifPresent(aura -> aura.addAmount(3.0F));
             }
             applyWeaponModifierKillEffects(stack, player, target);
+        } else if (blockHit.getType() != HitResult.Type.MISS) {
+            applyBlockElement(level, blockHit, ammoShot, stack);
+        }
+    }
+
+    private void applyBlockElement(Level level, BlockHitResult result, AmmoShot ammoShot, ItemStack stack) {
+        String element = projectileElementKey(ammoShot, stack);
+        Float explosionPower = explosionPower(element);
+        if (explosionPower != null) {
+            createLegacyExplosion(level, null, result.getLocation().x, result.getLocation().y, result.getLocation().z,
+                    explosionPower, Level.ExplosionInteraction.MOB);
+        }
+        if (element.contains("fire")) {
+            BlockPos firePos = result.getBlockPos().relative(result.getDirection());
+            BlockState fire = net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState();
+            if (fire.canSurvive(level, firePos)) {
+                level.setBlockAndUpdate(firePos, fire);
+            }
         }
     }
 
@@ -1038,7 +1056,7 @@ public class RWBYMWeaponItem extends Item {
         }
         Float explosionPower = explosionPower(element);
         if (explosionPower != null) {
-            target.level().explode(target, target.getX(), target.getY(), target.getZ(), explosionPower,
+            createLegacyExplosion(target.level(), target, target.getX(), target.getY(), target.getZ(), explosionPower,
                     Level.ExplosionInteraction.NONE);
             applyLegacyExplosionTargetEffects(target, element);
         }
@@ -1119,6 +1137,17 @@ public class RWBYMWeaponItem extends Item {
             return 0.0F;
         }
         return 1.5F;
+    }
+
+    public static void createLegacyExplosion(Level level, Entity source, double x, double y, double z, float power,
+            Level.ExplosionInteraction interaction) {
+        level.explode(source, x, y, z, power, interaction);
+        if (power == 0.0F && level instanceof ServerLevel serverLevel) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Forge zero-power explosions do not give the same readable feedback as 1.12 createExplosion.
+            serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            serverLevel.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
     }
 
     private void applyWeaponModifierKillEffects(ItemStack stack, Player player, LivingEntity target) {
