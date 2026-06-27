@@ -22,13 +22,20 @@ import io.github.blaezdev.rwbym.item.RWBYMWeaponItem;
 import io.github.blaezdev.rwbym.item.RWBYMWeaponProfiles;
 import io.github.blaezdev.rwbym.item.SemblanceCoinItem;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -905,7 +912,7 @@ public final class RWBYMItems {
         RWBYMBlocks.BLOCKS_BY_NAME.forEach((name, block) -> {
             if (!"fluidgrimm".equals(name)) {
                 BLOCK_ITEMS.put(name,
-                        ITEMS.register(name, () -> new BlockItem(block.get(), blockItemProperties(name))));
+                        ITEMS.register(name, () -> createBlockItem(name, block.get())));
             }
         });
         spawnEgg("beowolf", RWBYMEntityTypes.BEOWOLF, 0x111111, 0xD8D8D8);
@@ -1069,6 +1076,22 @@ public final class RWBYMItems {
             properties.stacksTo(1).durability(255);
         }
         return properties;
+    }
+
+    private static BlockItem createBlockItem(String name, Block block) {
+        if ("crusher".equals(name)) {
+            return new BlockItem(block, blockItemProperties(name)) {
+                @Override
+                public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
+                    // Original RWBYCrusher documented which head belongs in each processing path.
+                    tooltip.add(Component.literal("-Chisel Head is used for making cut dust crystals & volatile dust crystals which are stronger.")
+                            .withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.literal("-Crusher Head is used for making dust powder double efficency of the furnace.")
+                            .withStyle(ChatFormatting.BLUE));
+                }
+            };
+        }
+        return new BlockItem(block, blockItemProperties(name));
     }
 
     private static ArmorItem.Type armorTypeFor(String name) {
