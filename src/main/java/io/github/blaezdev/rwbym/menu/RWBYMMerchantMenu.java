@@ -46,6 +46,9 @@ public class RWBYMMerchantMenu extends MerchantMenu {
         if (offerIndex < 0 || offerIndex >= this.getOffers().size()) {
             return;
         }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Original GuiVillager cleared stale payment slots when a recipe-button action changed trade context.
+        returnPaymentSlotsToInventory();
         int attempts = tradeAll ? 64 : 1;
         for (int i = 0; i < attempts; i++) {
             this.setSelectionHint(offerIndex);

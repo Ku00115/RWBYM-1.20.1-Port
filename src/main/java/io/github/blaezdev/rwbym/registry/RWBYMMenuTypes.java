@@ -15,7 +15,7 @@ public final class RWBYMMenuTypes {
 
     public static final RegistryObject<MenuType<CrusherMenu>> CRUSHER =
             MENU_TYPES.register("crusher", () -> IForgeMenuType.create((windowId, inv, data) ->
-                    new CrusherMenu(windowId, inv)));
+                    new CrusherMenu(windowId, inv, data)));
 
     public static final RegistryObject<MenuType<RWBYMMerchantMenu>> MERCHANT =
             MENU_TYPES.register("merchant", () -> IForgeMenuType.create((windowId, inv, data) ->

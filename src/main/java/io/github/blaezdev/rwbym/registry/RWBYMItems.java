@@ -15,6 +15,7 @@ import io.github.blaezdev.rwbym.item.RWBYMFishingWeaponItem;
 import io.github.blaezdev.rwbym.item.RWBYMGliderItem;
 import io.github.blaezdev.rwbym.item.RWBYMLimbItem;
 import io.github.blaezdev.rwbym.item.RWBYMMagazineItem;
+import io.github.blaezdev.rwbym.item.RWBYMProcessingToolItem;
 import io.github.blaezdev.rwbym.item.RWBYMScrollItem;
 import io.github.blaezdev.rwbym.item.RWBYMSummonItem;
 import io.github.blaezdev.rwbym.item.RWBYMWearableItem;
@@ -1009,6 +1010,9 @@ public final class RWBYMItems {
         }
         if (isInternalModelPart(name)) {
             return new Item(properties);
+        }
+        if (name.equals("chisel") || name.equals("crush")) {
+            return new RWBYMProcessingToolItem(properties);
         }
         if (isAmmoLike(name) || isFuelDust(name)) {
             // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source

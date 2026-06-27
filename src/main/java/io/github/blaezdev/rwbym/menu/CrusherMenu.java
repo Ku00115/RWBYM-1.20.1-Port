@@ -2,6 +2,8 @@ package io.github.blaezdev.rwbym.menu;
 
 import io.github.blaezdev.rwbym.block.entity.CrusherBlockEntity;
 import io.github.blaezdev.rwbym.registry.RWBYMMenuTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,6 +13,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class CrusherMenu extends AbstractContainerMenu {
     private final Container container;
@@ -18,6 +21,14 @@ public class CrusherMenu extends AbstractContainerMenu {
 
     public CrusherMenu(int id, Inventory inventory) {
         this(id, inventory, new SimpleContainer(4), new SimpleContainerData(4));
+    }
+
+    public CrusherMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
+        this(id, inventory, buffer.readBlockPos());
+    }
+
+    private CrusherMenu(int id, Inventory inventory, BlockPos pos) {
+        this(id, inventory, crusherContainer(inventory, pos), crusherData(inventory, pos));
     }
 
     public CrusherMenu(int id, Inventory inventory, Container container, ContainerData data) {
@@ -118,5 +129,15 @@ public class CrusherMenu extends AbstractContainerMenu {
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
         // CrusherBlockEntity mirrors the legacy distance-and-tile check; NULL access would skip that world position.
         return this.container.stillValid(player);
+    }
+
+    private static Container crusherContainer(Inventory inventory, BlockPos pos) {
+        BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
+        return blockEntity instanceof CrusherBlockEntity crusher ? crusher : new SimpleContainer(4);
+    }
+
+    private static ContainerData crusherData(Inventory inventory, BlockPos pos) {
+        BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
+        return blockEntity instanceof CrusherBlockEntity crusher ? crusher.data() : new SimpleContainerData(4);
     }
 }

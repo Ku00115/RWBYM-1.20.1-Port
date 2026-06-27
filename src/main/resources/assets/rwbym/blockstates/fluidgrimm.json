@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=1": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=2": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=3": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=4": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=5": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=6": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=7": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=8": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=9": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=10": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=11": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=12": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=13": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=14": {
+      "model": "rwbym:block/fluidgrimm"
+    },
+    "level=15": {
+      "model": "rwbym:block/fluidgrimm"
+    }
+  }
+}

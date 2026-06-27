@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 
 public class GrimmFluidType extends FluidType {
     private static final ResourceLocation STILL_TEXTURE =
-            new ResourceLocation(RWBYM.MOD_ID, "fluid/grimm/fluidgrimm_still");
+            new ResourceLocation(RWBYM.MOD_ID, "block/fluid/grimm/fluidgrimm_still");
     private static final ResourceLocation FLOWING_TEXTURE =
-            new ResourceLocation(RWBYM.MOD_ID, "fluid/grimm/fluidgrimm_flow");
+            new ResourceLocation(RWBYM.MOD_ID, "block/fluid/grimm/fluidgrimm_flow");
 
     public GrimmFluidType() {
         super(FluidType.Properties.create()

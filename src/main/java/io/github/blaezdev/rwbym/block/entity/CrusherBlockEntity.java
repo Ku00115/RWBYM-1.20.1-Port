@@ -270,10 +270,11 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
             return;
         }
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-        // Legacy crush/chisel were container tools; in 1.20 the same behavior is explicit durability damage.
-        boolean broken = tool.hurt(1, this.level == null ? null : this.level.random, null);
-        if (broken || tool.getDamageValue() >= tool.getMaxDamage()) {
-            this.items.set(TOOL_SLOT, ItemStack.EMPTY);
+        // Legacy crush/chisel used getContainerItem, so ask the stack for its modern crafting remainder first.
+        if (tool.hasCraftingRemainingItem()) {
+            this.items.set(TOOL_SLOT, tool.getCraftingRemainingItem());
+        } else {
+            tool.shrink(1);
         }
     }
 

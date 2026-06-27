@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "rwbym:block/fluid/grimm/fluidgrimm_still",
+    "particle": "rwbym:block/fluid/grimm/fluidgrimm_still"
+  }
+}
