@@ -3,6 +3,7 @@ package io.github.blaezdev.rwbym.client;
 import com.mojang.math.Axis;
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.item.RWBYMArmorItem;
+import io.github.blaezdev.rwbym.item.RWBYMLimbItem;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +40,11 @@ public final class RWBYMPlayerRenderEvents {
         PlayerModel<AbstractClientPlayer> model = event.getRenderer().getModel();
         SkinLayerState previous = SkinLayerState.capture(model);
 
-        if (hideSkinLayersForArmor(player, model)) {
+        boolean changed = false;
+        changed |= hideSkinLayersForArmor(player, model);
+        changed |= hideReplacedLimbsForAppearance(player, model);
+
+        if (changed) {
             HIDDEN_LAYER_STATES.put(player.getUUID(), previous);
         }
     }
@@ -105,23 +110,74 @@ public final class RWBYMPlayerRenderEvents {
         return changed;
     }
 
+    private static boolean hideReplacedLimbsForAppearance(AbstractClientPlayer player,
+            PlayerModel<AbstractClientPlayer> model) {
+        boolean changed = false;
+        if (hasAppearance(player, "Head")) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Original LayerAccessories used replace=true for these slots; hiding before base render avoids overlap.
+            model.head.visible = false;
+            model.hat.visible = false;
+            changed = true;
+        }
+        if (hasAppearance(player, "RightArm")) {
+            model.rightArm.visible = false;
+            model.rightSleeve.visible = false;
+            changed = true;
+        }
+        if (hasAppearance(player, "LeftArm")) {
+            model.leftArm.visible = false;
+            model.leftSleeve.visible = false;
+            changed = true;
+        }
+        if (hasAppearance(player, "RightLeg")) {
+            model.rightLeg.visible = false;
+            model.rightPants.visible = false;
+            changed = true;
+        }
+        if (hasAppearance(player, "LeftLeg")) {
+            model.leftLeg.visible = false;
+            model.leftPants.visible = false;
+            changed = true;
+        }
+        if (hasAppearance(player, "Body")) {
+            model.body.visible = false;
+            model.jacket.visible = false;
+            changed = true;
+        }
+        return changed;
+    }
+
+    private static boolean hasAppearance(AbstractClientPlayer player, String slot) {
+        return !RWBYMLimbItem.getAppearance(player, slot).isBlank();
+    }
+
     private static boolean isRwbyArmor(AbstractClientPlayer player, EquipmentSlot slot) {
         ItemStack stack = player.getItemBySlot(slot);
         return stack.getItem() instanceof RWBYMArmorItem;
     }
 
-    private record SkinLayerState(boolean hat, boolean jacket, boolean leftSleeve, boolean rightSleeve,
+    private record SkinLayerState(boolean head, boolean hat, boolean body, boolean jacket, boolean leftArm,
+            boolean rightArm, boolean leftSleeve, boolean rightSleeve, boolean leftLeg, boolean rightLeg,
             boolean leftPants, boolean rightPants) {
         static SkinLayerState capture(PlayerModel<AbstractClientPlayer> model) {
-            return new SkinLayerState(model.hat.visible, model.jacket.visible, model.leftSleeve.visible,
-                    model.rightSleeve.visible, model.leftPants.visible, model.rightPants.visible);
+            return new SkinLayerState(model.head.visible, model.hat.visible, model.body.visible,
+                    model.jacket.visible, model.leftArm.visible, model.rightArm.visible, model.leftSleeve.visible,
+                    model.rightSleeve.visible, model.leftLeg.visible, model.rightLeg.visible, model.leftPants.visible,
+                    model.rightPants.visible);
         }
 
         void restore(PlayerModel<AbstractClientPlayer> model) {
+            model.head.visible = this.head;
             model.hat.visible = this.hat;
+            model.body.visible = this.body;
             model.jacket.visible = this.jacket;
+            model.leftArm.visible = this.leftArm;
+            model.rightArm.visible = this.rightArm;
             model.leftSleeve.visible = this.leftSleeve;
             model.rightSleeve.visible = this.rightSleeve;
+            model.leftLeg.visible = this.leftLeg;
+            model.rightLeg.visible = this.rightLeg;
             model.leftPants.visible = this.leftPants;
             model.rightPants.visible = this.rightPants;
         }
