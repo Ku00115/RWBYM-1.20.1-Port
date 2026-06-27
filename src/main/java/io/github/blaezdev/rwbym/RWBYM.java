@@ -10,6 +10,7 @@ import io.github.blaezdev.rwbym.registry.RWBYMItems;
 import io.github.blaezdev.rwbym.registry.RWBYMLootModifiers;
 import io.github.blaezdev.rwbym.registry.RWBYMMenuTypes;
 import io.github.blaezdev.rwbym.registry.RWBYMMobEffects;
+import io.github.blaezdev.rwbym.registry.RWBYMRecipeTypes;
 import io.github.blaezdev.rwbym.registry.RWBYMSounds;
 import io.github.blaezdev.rwbym.network.RWBYMNetwork;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -35,6 +36,8 @@ public final class RWBYM {
         RWBYMLootModifiers.LOOT_MODIFIERS.register(modBus);
         RWBYMMenuTypes.MENU_TYPES.register(modBus);
         RWBYMMobEffects.MOB_EFFECTS.register(modBus);
+        RWBYMRecipeTypes.RECIPE_SERIALIZERS.register(modBus);
+        RWBYMRecipeTypes.RECIPE_TYPES.register(modBus);
         RWBYMSounds.SOUND_EVENTS.register(modBus);
         RWBYMCreativeTabs.CREATIVE_MODE_TABS.register(modBus);
         RWBYMNetwork.register();

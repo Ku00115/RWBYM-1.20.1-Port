@@ -73,6 +73,7 @@ Completed:
 - Replaced the temporary all-zombie Grimm client renderers with transitional textured Grimm renderers that use the migrated entity textures and per-Grimm scaling.
 - Expanded `BasicGrimmEntity` with first-pass Grimm behavior differences: sunlight immunity, Apathy weakening aura, Lancer aerial movement, Deathstalker poison, charging knockback for Boarbatusk/Sabyr, and heavy Grimm slowing hits.
 - Added first-pass 1.20 interactions for migrated utility blocks: Grimm bait summons random Grimm, toolkit repairs a held damaged item for 5 levels and consumes itself, and crusher/crush blocks process dust rocks/crystals into dust/cut crystals without the old GUI yet.
+- Restored the Crusher as a real 1.20.1 machine flow with a custom `rwbym:crusher` recipe type, JSON versions of the original paired input/tool recipe table, original slot coordinates, and a fixed shop NPC biped renderer for store-style merchants.
 - Registered placeholder 1.20.1 content for the migrated assets:
   - 28 block registry entries from `assets/rwbym/blockstates`.
   - 817 item registry entries from `assets/rwbym/models/item` plus the missing `hbangle` recipe item.

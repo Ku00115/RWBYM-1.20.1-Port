@@ -1,0 +1,7 @@
+{
+  "type": "rwbym:crusher",
+  "input": { "item": "rwbym:dustcrystal" },
+  "tool": { "item": "rwbym:chisel" },
+  "result": { "item": "rwbym:dustcrystalcut" },
+  "experience": 3.0
+}

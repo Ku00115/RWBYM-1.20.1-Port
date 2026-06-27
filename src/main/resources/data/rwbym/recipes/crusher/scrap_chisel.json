@@ -1,0 +1,7 @@
+{
+  "type": "rwbym:crusher",
+  "input": { "item": "rwbym:scrap" },
+  "tool": { "item": "rwbym:chisel" },
+  "result": { "item": "minecraft:iron_nugget", "count": 9 },
+  "experience": 3.0
+}

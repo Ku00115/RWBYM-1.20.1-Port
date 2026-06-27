@@ -1,8 +1,10 @@
 package io.github.blaezdev.rwbym.block.entity;
 
 import io.github.blaezdev.rwbym.menu.CrusherMenu;
+import io.github.blaezdev.rwbym.recipe.CrusherRecipe;
 import io.github.blaezdev.rwbym.registry.RWBYMBlockEntities;
 import io.github.blaezdev.rwbym.registry.RWBYMItems;
+import io.github.blaezdev.rwbym.registry.RWBYMRecipeTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer, MenuProvider {
     public static final int INPUT_SLOT = 0;
@@ -35,8 +39,8 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     private static final int[] INPUT_SLOTS = {INPUT_SLOT, TOOL_SLOT};
     private static final int[] FUEL_SLOTS = {FUEL_SLOT};
     private static final int[] OUTPUT_SLOTS = {OUTPUT_SLOT};
-    private static Map<Item, ItemStack> crushRecipes;
-    private static Map<Item, ItemStack> chiselRecipes;
+    private static Map<Item, ItemStack> legacyCrushRecipes;
+    private static Map<Item, ItemStack> legacyChiselRecipes;
 
     private final net.minecraft.core.NonNullList<ItemStack> items =
             net.minecraft.core.NonNullList.withSize(4, ItemStack.EMPTY);
@@ -226,7 +230,7 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     }
 
     private boolean canProcess() {
-        ItemStack result = crushedResult(this.items.get(INPUT_SLOT), this.items.get(TOOL_SLOT));
+        ItemStack result = this.crushedResult(this.items.get(INPUT_SLOT), this.items.get(TOOL_SLOT));
         if (result.isEmpty()) {
             return false;
         }
@@ -236,7 +240,7 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
     }
 
     private void process() {
-        ItemStack result = crushedResult(this.items.get(INPUT_SLOT), this.items.get(TOOL_SLOT));
+        ItemStack result = this.crushedResult(this.items.get(INPUT_SLOT), this.items.get(TOOL_SLOT));
         if (result.isEmpty()) {
             return;
         }
@@ -294,27 +298,43 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         return net.minecraftforge.common.ForgeHooks.getBurnTime(stack, null);
     }
 
-    public static ItemStack crushedResult(ItemStack input, ItemStack tool) {
+    private static ItemStack legacyCrushedResult(ItemStack input, ItemStack tool) {
         if (input.isEmpty() || !isCrusherTool(tool)) {
             return ItemStack.EMPTY;
         }
-        Map<Item, ItemStack> recipes = idPath(tool).equals("chisel") ? chiselRecipes() : crushRecipes();
+        Map<Item, ItemStack> recipes = idPath(tool).equals("chisel") ? legacyChiselRecipes() : legacyCrushRecipes();
         ItemStack result = recipes.get(input.getItem());
         return result == null ? ItemStack.EMPTY : result.copy();
     }
 
-    private static Map<Item, ItemStack> crushRecipes() {
-        if (crushRecipes == null) {
-            crushRecipes = buildCrushRecipes();
-        }
-        return crushRecipes;
+    private ItemStack crushedResult(ItemStack input, ItemStack tool) {
+        Optional<CrusherRecipe> recipe = this.crusherRecipe(input, tool);
+        return recipe.map(value -> value.getResultItem(this.level.registryAccess()).copy())
+                .orElseGet(() -> legacyCrushedResult(input, tool));
     }
 
-    private static Map<Item, ItemStack> chiselRecipes() {
-        if (chiselRecipes == null) {
-            chiselRecipes = buildChiselRecipes();
+    private Optional<CrusherRecipe> crusherRecipe(ItemStack input, ItemStack tool) {
+        if (this.level == null || input.isEmpty() || !isCrusherTool(tool)) {
+            return Optional.empty();
         }
-        return chiselRecipes;
+        SimpleContainer recipeInput = new SimpleContainer(input, tool);
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // The original recipe table matched a two-stack pair; the modern port asks the datapack recipe manager for the same pair.
+        return this.level.getRecipeManager().getRecipeFor(RWBYMRecipeTypes.CRUSHER.get(), recipeInput, this.level);
+    }
+
+    private static Map<Item, ItemStack> legacyCrushRecipes() {
+        if (legacyCrushRecipes == null) {
+            legacyCrushRecipes = buildCrushRecipes();
+        }
+        return legacyCrushRecipes;
+    }
+
+    private static Map<Item, ItemStack> legacyChiselRecipes() {
+        if (legacyChiselRecipes == null) {
+            legacyChiselRecipes = buildChiselRecipes();
+        }
+        return legacyChiselRecipes;
     }
 
     private static Map<Item, ItemStack> buildCrushRecipes() {

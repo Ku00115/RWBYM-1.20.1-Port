@@ -3,6 +3,7 @@ package io.github.blaezdev.rwbym.client.model.grimm;
 import io.github.blaezdev.rwbym.client.model.legacy.ModelBiped;
 import io.github.blaezdev.rwbym.client.model.legacy.ModelBox;
 import io.github.blaezdev.rwbym.client.model.legacy.ModelRenderer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 public class ModelStore extends ModelBiped {
@@ -74,7 +75,14 @@ public class ModelStore extends ModelBiped {
 
 
 	public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-		super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+		// Original shop renderers used ModelPlayer with all base and outerwear parts visible.
+		this.head.render(scale);
+		this.hat.render(scale);
+		this.body.render(scale);
+		this.rightArm.render(scale);
+		this.leftArm.render(scale);
+		this.rightLeg.render(scale);
+		this.bipedLeftLeg.render(scale);
 		
 		if (this.isChild) {
 			this.bipedLeftLegwear.render(scale);
@@ -99,11 +107,27 @@ public class ModelStore extends ModelBiped {
 
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
 		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+		// AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+		// ModelPlayer animation is not available to the legacy model shim, so mirror its basic walk/look rotations here.
+		this.head.rotateAngleY = netHeadYaw * Mth.DEG_TO_RAD;
+		this.head.rotateAngleX = headPitch * Mth.DEG_TO_RAD;
+		copyModelAngles(this.head, this.hat);
+
+		this.rightArm.rotateAngleX = Mth.cos(limbSwing * 0.6662F + Mth.PI) * 2.0F * limbSwingAmount * 0.5F;
+		this.leftArm.rotateAngleX = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+		this.rightLeg.rotateAngleX = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+		this.bipedLeftLeg.rotateAngleX = Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount;
+		this.body.rotateAngleY = 0.0F;
+		this.rightArm.rotateAngleY = 0.0F;
+		this.leftArm.rotateAngleY = 0.0F;
+		this.rightLeg.rotateAngleY = 0.0F;
+		this.bipedLeftLeg.rotateAngleY = 0.0F;
+
 		copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);
-		copyModelAngles(this.bipedRightLeg, this.bipedRightLegwear);
-		copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
-		copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
-		copyModelAngles(this.bipedBody, this.bipedBodyWear);
+		copyModelAngles(this.rightLeg, this.bipedRightLegwear);
+		copyModelAngles(this.leftArm, this.bipedLeftArmwear);
+		copyModelAngles(this.rightArm, this.bipedRightArmwear);
+		copyModelAngles(this.body, this.bipedBodyWear);
 	}
 
 

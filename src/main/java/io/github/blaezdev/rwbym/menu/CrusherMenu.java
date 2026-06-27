@@ -34,13 +34,13 @@ public class CrusherMenu extends AbstractContainerMenu {
                 return container.canPlaceItem(CrusherBlockEntity.TOOL_SLOT, stack);
             }
         });
-        addSlot(new Slot(container, CrusherBlockEntity.FUEL_SLOT, 8, 36) {
+        addSlot(new Slot(container, CrusherBlockEntity.FUEL_SLOT, 7, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return container.canPlaceItem(CrusherBlockEntity.FUEL_SLOT, stack);
             }
         });
-        addSlot(new Slot(container, CrusherBlockEntity.OUTPUT_SLOT, 82, 36) {
+        addSlot(new Slot(container, CrusherBlockEntity.OUTPUT_SLOT, 81, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;

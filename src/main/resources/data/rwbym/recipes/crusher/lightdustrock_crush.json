@@ -1,0 +1,7 @@
+{
+  "type": "rwbym:crusher",
+  "input": { "item": "rwbym:lightdustrock" },
+  "tool": { "item": "rwbym:crush" },
+  "result": { "item": "rwbym:lightdust", "count": 2 },
+  "experience": 3.0
+}
