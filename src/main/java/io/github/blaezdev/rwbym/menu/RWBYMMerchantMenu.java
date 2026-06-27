@@ -63,7 +63,7 @@ public class RWBYMMerchantMenu extends MerchantMenu {
         }
     }
 
-    private void returnPaymentSlotsToInventory() {
+    public void returnPaymentSlotsToInventory() {
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
         // The legacy ContainerVillager merged leftover payment-slot items back after shift-right-click trading.
         for (int slotIndex = 0; slotIndex <= 1; slotIndex++) {

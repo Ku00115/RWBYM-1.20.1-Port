@@ -339,6 +339,11 @@ public class RWBYMMerchantScreen extends AbstractContainerScreen<RWBYMMerchantMe
             this.menu.tryMoveItems(offerIndex);
         } else {
             this.ghostOfferIndex = offerIndex;
+            if (this.hasPaymentSlotsContents()) {
+                // Original GuiVillager cleared stale payment items before showing a ghost recipe for a missing trade.
+                this.menu.returnPaymentSlotsToInventory();
+                RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(-1, false));
+            }
         }
         if (this.minecraft != null && this.minecraft.getConnection() != null) {
             this.minecraft.getConnection().send(new ServerboundSelectTradePacket(offerIndex));

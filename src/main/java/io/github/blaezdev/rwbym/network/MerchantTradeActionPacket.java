@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 /**
- * Client-to-server packet for RWBYM's legacy merchant book quick-trade action.
+ * Client-to-server packet for RWBYM's legacy merchant book quick-trade and payment-slot cleanup actions.
  *
  * <p>Linked files: {@code RWBYMMerchantScreen.java}, {@code RWBYMMerchantMenu.java},
  * and {@code RWBYMMerchantEntity.java}.</p>
@@ -27,6 +27,11 @@ public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
         context.get().enqueueWork(() -> {
             ServerPlayer player = context.get().getSender();
             if (player == null || !(player.containerMenu instanceof RWBYMMerchantMenu merchantMenu)) {
+                return;
+            }
+            if (packet.offerIndex < 0) {
+                // Negative index is the modern stand-in for GuiVillager's clear=true MessageTradingData path.
+                merchantMenu.returnPaymentSlotsToInventory();
                 return;
             }
             merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll);
