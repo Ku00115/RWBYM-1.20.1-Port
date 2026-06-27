@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,6 +65,9 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
+        if (bait.isActive()) {
+            bait.spawnActiveSmoke(serverLevel, pos);
+        }
         boolean changed = false;
         if (bait.stopping) {
             changed = bait.dropRewardTick(serverLevel, pos);
@@ -73,6 +77,18 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         if (changed) {
             setChanged(level, pos, state);
         }
+    }
+
+    private void spawnActiveSmoke(ServerLevel level, BlockPos pos) {
+        if (level.getGameTime() % 4L != 0L) {
+            return;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // The 1.12 block used client randomDisplayTick; server particles avoid a custom active-state sync packet.
+        double x = pos.getX() + level.random.nextDouble() * 0.10000000149011612D;
+        double y = pos.getY() + level.random.nextDouble();
+        double z = pos.getZ() + level.random.nextDouble();
+        level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
     private boolean waveTick(ServerLevel level, BlockPos pos) {
