@@ -1,6 +1,7 @@
 package io.github.blaezdev.rwbym.registry;
 
 import io.github.blaezdev.rwbym.RWBYM;
+import io.github.blaezdev.rwbym.block.CrusherBlock;
 import io.github.blaezdev.rwbym.block.GrimmFluidBlock;
 import io.github.blaezdev.rwbym.block.RWBYMInteractiveBlock;
 import java.util.LinkedHashMap;
@@ -97,7 +98,10 @@ public final class RWBYMBlocks {
         if ("hrdltfence".equals(name)) {
             return new FenceBlock(stoneProperties(name));
         }
-        if ("bait".equals(name) || "crusher".equals(name) || "toolkit".equals(name)) {
+        if ("crusher".equals(name)) {
+            return new CrusherBlock(stoneProperties(name));
+        }
+        if ("bait".equals(name) || "toolkit".equals(name)) {
             return new RWBYMInteractiveBlock(name, stoneProperties(name));
         }
         return new Block(stoneProperties(name));

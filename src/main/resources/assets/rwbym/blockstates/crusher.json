@@ -1,7 +1,8 @@
-﻿{
+{
   "variants": {
-    "": {
-      "model": "rwbym:block/chrusher"
-    }
+    "facing=north": { "model": "rwbym:block/chrusher" },
+    "facing=east": { "model": "rwbym:block/chrusher", "y": 90 },
+    "facing=south": { "model": "rwbym:block/chrusher", "y": 180 },
+    "facing=west": { "model": "rwbym:block/chrusher", "y": 270 }
   }
 }
