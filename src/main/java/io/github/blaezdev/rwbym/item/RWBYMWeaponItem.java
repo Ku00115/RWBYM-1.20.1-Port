@@ -1821,7 +1821,8 @@ public class RWBYMWeaponItem extends Item {
                     + (tag.getBoolean(SPECIAL_GUN_CHAMBERED) ? 1.0F : 0.0F);
             case "bolt", "boltback" -> Math.max(tag.getInt(SPECIAL_GUN_BOLT_BACK),
                     tag.getInt(SPECIAL_GUN_BOLT_TICKS) > 0 ? 2 : 0);
-            case "boltopen" -> tag.getInt(SPECIAL_GUN_BOLT_BACK) >= 2 ? 1.0F : 0.0F;
+            case "boltopen" -> tag.getInt(SPECIAL_GUN_BOLT_BACK) >= 2
+                    || tag.getInt(SPECIAL_GUN_BOLT_TICKS) > 0 ? 1.0F : 0.0F;
             case "boltup" -> Math.max(tag.getInt(SPECIAL_GUN_BOLT_UP),
                     tag.getInt(SPECIAL_GUN_BOLT_TICKS) > 0 ? 2 : 0);
             case "slide", "charge_handle" -> tag.getBoolean(SPECIAL_GUN_AUTO_SLIDE_LOCK) ? 4.0F
