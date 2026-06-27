@@ -553,7 +553,7 @@ public class RWBYMWeaponItem extends Item {
             }
             List<AmmoShot> ammoShots = isSpecialMagazineGun()
                     ? consumeSpecialGunAmmo(stack, player, shots)
-                    : player.getAbilities().instabuild ? creativeAmmo(shots) : consumeAmmo(player, shots);
+                    : player.getAbilities().instabuild ? creativeAmmo(player, shots) : consumeAmmo(player, shots);
             if (ammoShots.size() < shots) {
                 playDryFire(level, player);
                 applyNoAmmoSpecial(player);
@@ -1858,7 +1858,7 @@ public class RWBYMWeaponItem extends Item {
     }
 
     private boolean hasUsableAmmo(Player player) {
-        if (player.getAbilities().instabuild || hasInfiniteProfileAmmo()) {
+        if (hasInfiniteProfileAmmo()) {
             return hasProfileAmmo();
         }
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -1870,12 +1870,19 @@ public class RWBYMWeaponItem extends Item {
         return false;
     }
 
-    private List<AmmoShot> creativeAmmo(int amount) {
-        AmmoShot ammoShot = AmmoShot.EMPTY;
-        if (hasProfileAmmo()) {
-            ammoShot = ammoShot(this.profileAmmoIds.get(0));
+    private List<AmmoShot> creativeAmmo(Player player, int amount) {
+        if (hasInfiniteProfileAmmo()) {
+            return Collections.nCopies(amount, ammoShot(this.profileAmmoIds.get(0)));
         }
-        return Collections.nCopies(amount, ammoShot);
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack candidate = player.getInventory().getItem(i);
+            if (!candidate.isEmpty() && isAmmo(candidate)) {
+                // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+                // Creative players keep matching ammo, but non-infinite legacy ammo is still required to fire.
+                return Collections.nCopies(amount, ammoShot(candidate));
+            }
+        }
+        return Collections.emptyList();
     }
 
     private boolean hasInfiniteProfileAmmo() {
