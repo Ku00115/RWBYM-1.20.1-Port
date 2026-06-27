@@ -254,7 +254,8 @@ public final class RWBYMClientEvents {
             registerPullSet(item, "5", "pulling5");
         }
         ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, level, entity, seed) -> isUsing(entity, stack) ? 1.0F : 0.0F);
+                (stack, level, entity, seed) -> isUsing(entity, stack)
+                        || RWBYMWeaponItem.isActiveKineticBoard(stack, entity) ? 1.0F : 0.0F);
         ItemProperties.register(item, new ResourceLocation("offhand"),
                 (stack, level, entity, seed) -> isOffhand(entity, stack) ? 1.0F : 0.0F);
         ItemProperties.register(item, new ResourceLocation("offhand1"),

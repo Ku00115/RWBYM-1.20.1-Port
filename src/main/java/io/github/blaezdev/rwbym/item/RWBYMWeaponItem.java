@@ -71,6 +71,7 @@ public class RWBYMWeaponItem extends Item {
     }
 
     private static final TagKey<Item> AMMO_TAG = ItemTags.create(new ResourceLocation(RWBYM.MOD_ID, "ammo"));
+    private static final String LEGACY_STATE_TAG = "RWBYM";
     private static final UUID MOVEMENT_SPEED_MODIFIER = UUID.fromString("24806a06-46d6-11ea-b77f-2e728ce88125");
     private static final String SPECIAL_GUN_MAGAZINE_AMMO = "MagazineAmmo";
     private static final String SPECIAL_GUN_CHAMBERED = "BulletChambered";
@@ -202,6 +203,11 @@ public class RWBYMWeaponItem extends Item {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(stack);
         }
+        if (isKineticBoard() && hand == InteractionHand.MAIN_HAND) {
+            setBoardInactive(stack, 0);
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(stack);
+        }
         if (shouldStartUseChannel(hand)) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(stack);
@@ -238,6 +244,7 @@ public class RWBYMWeaponItem extends Item {
         }
         tickSpecialGunAnimations(stack);
         tickSpecialGunTrigger(stack, player);
+        tickKineticBoardState(stack, player);
         applyAuraStorage(stack, player);
     }
 
@@ -2180,6 +2187,42 @@ public class RWBYMWeaponItem extends Item {
     private boolean isKineticBoard() {
         String name = this.profile.name();
         return name.equals("reese") || name.equals("lucidroseboard");
+    }
+
+    private void tickKineticBoardState(ItemStack stack, Player player) {
+        if (!isKineticBoard() || player.getMainHandItem() != stack || player.isUsingItem()) {
+            return;
+        }
+        int inactive = boardInactive(stack);
+        if (inactive < 2) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy KineticWeapons allowed the board render/ride state to linger briefly after right-click use.
+            setBoardInactive(stack, inactive + 1);
+            if (inactive + 1 < 2) {
+                player.startUsingItem(InteractionHand.MAIN_HAND);
+            }
+        }
+    }
+
+    public static boolean isActiveKineticBoard(ItemStack stack, LivingEntity entity) {
+        if (!(entity instanceof Player player) || player.getMainHandItem() != stack) {
+            return false;
+        }
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id == null || !id.getNamespace().equals(RWBYM.MOD_ID)) {
+            return false;
+        }
+        String name = id.getPath();
+        return (name.equals("reese") || name.equals("lucidroseboard")) && boardInactive(stack) < 2;
+    }
+
+    private static int boardInactive(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement(LEGACY_STATE_TAG);
+        return tag == null ? 0 : tag.getInt("inactive");
+    }
+
+    private static void setBoardInactive(ItemStack stack, int inactive) {
+        stack.getOrCreateTagElement(LEGACY_STATE_TAG).putInt("inactive", inactive);
     }
 
     private boolean shouldStartUseChannel(InteractionHand hand) {

@@ -4,13 +4,13 @@ import com.mojang.math.Axis;
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.item.RWBYMArmorItem;
 import io.github.blaezdev.rwbym.item.RWBYMLimbItem;
+import io.github.blaezdev.rwbym.item.RWBYMWeaponItem;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Restores original RWBYM player-render layer masking for skin-layout armor.
@@ -82,12 +81,10 @@ public final class RWBYMPlayerRenderEvents {
     }
 
     private static boolean isActiveBoard(AbstractClientPlayer player, ItemStack stack) {
-        if (stack.isEmpty() || !player.isUsingItem() || player.getUseItem() != stack) {
+        if (stack.isEmpty()) {
             return false;
         }
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
-        return id != null && id.getNamespace().equals(RWBYM.MOD_ID)
-                && (id.getPath().equals("lucidroseboard") || id.getPath().equals("reese"));
+        return RWBYMWeaponItem.isActiveKineticBoard(stack, player);
     }
 
     private static boolean hideSkinLayersForArmor(AbstractClientPlayer player, PlayerModel<AbstractClientPlayer> model) {
