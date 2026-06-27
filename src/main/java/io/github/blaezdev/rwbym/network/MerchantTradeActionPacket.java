@@ -13,14 +13,19 @@ import net.minecraftforge.network.NetworkEvent;
  * and {@code RWBYMMerchantEntity.java}.</p>
  */
 // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
+public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll, boolean takeResult) {
+    public MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
+        this(offerIndex, tradeAll, true);
+    }
+
     public static void encode(MerchantTradeActionPacket packet, FriendlyByteBuf buffer) {
         buffer.writeVarInt(packet.offerIndex);
         buffer.writeBoolean(packet.tradeAll);
+        buffer.writeBoolean(packet.takeResult);
     }
 
     public static MerchantTradeActionPacket decode(FriendlyByteBuf buffer) {
-        return new MerchantTradeActionPacket(buffer.readVarInt(), buffer.readBoolean());
+        return new MerchantTradeActionPacket(buffer.readVarInt(), buffer.readBoolean(), buffer.readBoolean());
     }
 
     public static void handle(MerchantTradeActionPacket packet, Supplier<NetworkEvent.Context> context) {
@@ -34,7 +39,11 @@ public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
                 merchantMenu.returnPaymentSlotsToInventory();
                 return;
             }
-            merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll);
+            if (packet.takeResult) {
+                merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll);
+            } else {
+                merchantMenu.prepareBookTrade(packet.offerIndex);
+            }
         });
         context.get().setPacketHandled(true);
     }

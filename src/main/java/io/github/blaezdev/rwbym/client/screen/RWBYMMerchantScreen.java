@@ -337,6 +337,8 @@ public class RWBYMMerchantScreen extends AbstractContainerScreen<RWBYMMerchantMe
         if (this.hasRecipeContents(offer)) {
             this.ghostOfferIndex = -1;
             this.menu.tryMoveItems(offerIndex);
+            // Original GuiVillager mirrored recipe-button ingredient moves on the server with MessageTradingData.
+            RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(offerIndex, false, false));
         } else {
             this.ghostOfferIndex = offerIndex;
             if (this.hasPaymentSlotsContents()) {

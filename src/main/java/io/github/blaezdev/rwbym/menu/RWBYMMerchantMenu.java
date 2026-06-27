@@ -63,6 +63,17 @@ public class RWBYMMerchantMenu extends MerchantMenu {
         }
     }
 
+    public void prepareBookTrade(int offerIndex) {
+        if (offerIndex < 0 || offerIndex >= this.getOffers().size()) {
+            return;
+        }
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy MessageTradingData channel 2 populated the server-side merchant slots on left-click.
+        this.setSelectionHint(offerIndex);
+        this.returnPaymentSlotsToInventory();
+        this.tryMoveItems(offerIndex);
+    }
+
     public void returnPaymentSlotsToInventory() {
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
         // The legacy ContainerVillager merged leftover payment-slot items back after shift-right-click trading.
