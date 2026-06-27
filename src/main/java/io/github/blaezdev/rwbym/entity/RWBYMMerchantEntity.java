@@ -45,6 +45,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.RegistryObject;
 
 public class RWBYMMerchantEntity extends AbstractVillager {
+    private static final int LEGACY_MAX_TRADE_USES = 7;
     private static final Map<String, String> LEGACY_TRADE_ITEM_IDS = Map.ofEntries(
             Map.entry("wallet", "lienwallet"),
             Map.entry("henchmanchest", "henchman_chest"),
@@ -590,7 +591,8 @@ public class RWBYMMerchantEntity extends AbstractVillager {
         if (cost.isEmpty() || result.isEmpty()) {
             return null;
         }
-        return new MerchantOffer(cost, result, Integer.MAX_VALUE, 1, 0.0F);
+        // Original MerchantRecipe constructors used vanilla's limited default uses before the 18000 tick refresh.
+        return new MerchantOffer(cost, result, LEGACY_MAX_TRADE_USES, 1, 0.0F);
     }
 
     @Nullable
@@ -598,7 +600,8 @@ public class RWBYMMerchantEntity extends AbstractVillager {
         if (costA.isEmpty() || costB.isEmpty() || result.isEmpty()) {
             return null;
         }
-        return new MerchantOffer(costA, costB, result, Integer.MAX_VALUE, 1, 0.0F);
+        // Original MerchantRecipe constructors used vanilla's limited default uses before the 18000 tick refresh.
+        return new MerchantOffer(costA, costB, result, LEGACY_MAX_TRADE_USES, 1, 0.0F);
     }
 
     private ItemStack itemStack(String itemName, int count) {

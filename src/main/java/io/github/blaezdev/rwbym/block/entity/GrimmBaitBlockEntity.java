@@ -35,7 +35,6 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     private int waveCount;
     private UUID playerId;
     private boolean stopping;
-    private int rewardDelay;
     private final List<UUID> currentWave = new ArrayList<>();
     private final List<UUID> alive = new ArrayList<>();
     private final List<ItemStack> rewards = new ArrayList<>();
@@ -118,15 +117,12 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     }
 
     private boolean dropRewardTick(ServerLevel level, BlockPos pos) {
-        if (this.rewardDelay-- > 0) {
-            return false;
-        }
-        this.rewardDelay = 2;
         if (!this.rewards.isEmpty()) {
             ItemStack reward = this.rewards.remove(0);
             net.minecraft.world.entity.item.ItemEntity item =
                     new net.minecraft.world.entity.item.ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 1.0D,
                             pos.getZ() + 0.5D, reward);
+            // Original TileEntityRWBYGrimmBait ejected one queued reward per server tick with a small upward pop.
             item.setDeltaMovement(level.random.nextGaussian() * 0.1D, 0.5D, level.random.nextGaussian() * 0.1D);
             level.addFreshEntity(item);
             return true;
@@ -287,7 +283,6 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         super.saveAdditional(tag);
         tag.putInt("WaveCount", this.waveCount);
         tag.putBoolean("Stopping", this.stopping);
-        tag.putInt("RewardDelay", this.rewardDelay);
         if (this.playerId != null) {
             tag.putUUID("Player", this.playerId);
         }
@@ -305,7 +300,6 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         super.load(tag);
         this.waveCount = tag.getInt("WaveCount");
         this.stopping = tag.getBoolean("Stopping");
-        this.rewardDelay = tag.getInt("RewardDelay");
         this.playerId = tag.hasUUID("Player") ? tag.getUUID("Player") : null;
         this.currentWave.clear();
         this.alive.clear();

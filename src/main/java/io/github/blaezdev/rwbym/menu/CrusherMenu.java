@@ -1,7 +1,6 @@
 package io.github.blaezdev.rwbym.menu;
 
 import io.github.blaezdev.rwbym.block.entity.CrusherBlockEntity;
-import io.github.blaezdev.rwbym.registry.RWBYMBlocks;
 import io.github.blaezdev.rwbym.registry.RWBYMMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -116,7 +115,8 @@ public class CrusherMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(net.minecraft.world.inventory.ContainerLevelAccess.NULL, player,
-                RWBYMBlocks.BLOCKS_BY_NAME.get("crusher").get());
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // CrusherBlockEntity mirrors the legacy distance-and-tile check; NULL access would skip that world position.
+        return this.container.stillValid(player);
     }
 }
