@@ -51,6 +51,19 @@ public class CrusherBlock extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        if (!level.isClientSide() && !oldState.is(state.getBlock())) {
+            Direction facing = state.getValue(FACING);
+            Direction opposite = facing.getOpposite();
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Legacy RWBYCrusher flipped away from a solid block immediately in front of it when the rear was open.
+            if (isSolidNeighbor(level, pos, facing) && !isSolidNeighbor(level, pos, opposite)) {
+                level.setBlock(pos, state.setValue(FACING, opposite), 2);
+            }
+        }
+    }
+
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
@@ -90,6 +103,11 @@ public class CrusherBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    private static boolean isSolidNeighbor(Level level, BlockPos pos, Direction direction) {
+        BlockPos neighborPos = pos.relative(direction);
+        return level.getBlockState(neighborPos).isSolidRender(level, neighborPos);
     }
 
     @Override

@@ -58,5 +58,22 @@ public class RWBYMMerchantMenu extends MerchantMenu {
                 break;
             }
         }
+        if (tradeAll) {
+            returnPaymentSlotsToInventory();
+        }
+    }
+
+    private void returnPaymentSlotsToInventory() {
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // The legacy ContainerVillager merged leftover payment-slot items back after shift-right-click trading.
+        for (int slotIndex = 0; slotIndex <= 1; slotIndex++) {
+            ItemStack stack = this.getSlot(slotIndex).getItem();
+            if (!stack.isEmpty() && this.moveItemStackTo(stack, 3, this.slots.size(), true)) {
+                if (stack.isEmpty()) {
+                    this.getSlot(slotIndex).set(ItemStack.EMPTY);
+                }
+                this.getSlot(slotIndex).setChanged();
+            }
+        }
     }
 }
