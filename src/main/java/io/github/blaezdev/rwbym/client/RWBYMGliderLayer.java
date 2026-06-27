@@ -38,10 +38,8 @@ public class RWBYMGliderLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             return;
         }
         poseStack.pushPose();
-        this.getParentModel().body.translateAndRotate(poseStack);
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-        // The 1.12 LayerGlider rendered the deployed item with a 180 degree flip and narrow wing scale.
-        poseStack.translate(0.0D, 0.25D, 0.24D);
+        // Keep the legacy LayerGlider transform here; the item model's HEAD display already anchors it to the player.
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         poseStack.scale(0.5F, 0.7F, 0.5F);
         this.itemRenderer.renderItem(player, new ItemStack(deployed.get()), ItemDisplayContext.HEAD, false,
