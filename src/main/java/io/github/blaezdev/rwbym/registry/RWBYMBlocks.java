@@ -2,6 +2,7 @@ package io.github.blaezdev.rwbym.registry;
 
 import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.block.CrusherBlock;
+import io.github.blaezdev.rwbym.block.DustOreBlock;
 import io.github.blaezdev.rwbym.block.GrimmFluidBlock;
 import io.github.blaezdev.rwbym.block.RWBYMInteractiveBlock;
 import java.util.LinkedHashMap;
@@ -100,6 +101,9 @@ public final class RWBYMBlocks {
         }
         if ("crusher".equals(name)) {
             return new CrusherBlock(stoneProperties(name));
+        }
+        if (isDustOre(name)) {
+            return new DustOreBlock(stoneProperties(name));
         }
         if ("bait".equals(name) || "toolkit".equals(name)) {
             return new RWBYMInteractiveBlock(name, stoneProperties(name));
@@ -216,6 +220,16 @@ public final class RWBYMBlocks {
                 || "crusher".equals(name)
                 || "toolkit".equals(name)
                 || "lantern".equals(name);
+    }
+
+    private static boolean isDustOre(String name) {
+        return name.equals("fireore")
+                || name.equals("gravityore")
+                || name.equals("iceore")
+                || name.equals("impureore")
+                || name.equals("lightore")
+                || name.equals("waterore")
+                || name.equals("windore");
     }
 
     private RWBYMBlocks() {
