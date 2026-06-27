@@ -76,6 +76,7 @@ Completed:
 - Restored the Crusher as a real 1.20.1 machine flow with a custom `rwbym:crusher` recipe type, JSON versions of the original paired input/tool recipe table, original slot coordinates, and a fixed shop NPC biped renderer for store-style merchants.
 - Tightened the Crusher/menu parity pass: `chisel` and `crush` now expose the original durable container-item behavior, the client Crusher menu resolves the real block entity from `NetworkHooks` position data, and RWBYM merchant quick-trade returns stale payment-slot contents before executing a book-button trade.
 - Verified the current shop/Crusher pass with `gradlew build` and `gradlew runClient`; `runClient` reached an integrated-world login after temporarily removing the incompatible external `game_interface-1.0.0.jar` from `run/mods`.
+- Restored small block parity details for the machine pass: the Crusher block item shows the original processing-head usage tooltip and Lantern emits full original-equivalent light level.
 - Registered placeholder 1.20.1 content for the migrated assets:
   - 28 block registry entries from `assets/rwbym/blockstates`.
   - 817 item registry entries from `assets/rwbym/models/item` plus the missing `hbangle` recipe item.

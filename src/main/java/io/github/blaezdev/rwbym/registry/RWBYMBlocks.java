@@ -118,7 +118,8 @@ public final class RWBYMBlocks {
         }
 
         if ("lantern".equals(name)) {
-            properties.lightLevel(state -> "lantern".equals(name) ? 14 : 0);
+            // Original RWBYLantern used setLightLevel(1.0F), which maps to full block light in modern MC.
+            properties.lightLevel(state -> "lantern".equals(name) ? 15 : 0);
         }
         if (isNotFullBlock(name)) {
             // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
