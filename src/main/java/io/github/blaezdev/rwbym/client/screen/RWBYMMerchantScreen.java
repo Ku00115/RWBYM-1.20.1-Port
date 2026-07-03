@@ -290,8 +290,10 @@ public class RWBYMMerchantScreen extends AbstractContainerScreen<RWBYMMerchantMe
             return;
         }
         if (minecraft.level.getEntity(this.menu.getMerchantEntityId()) instanceof LivingEntity merchant) {
+            // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+            // Keep the legacy merchant preview front-facing; the wider 1.20 GUI lets list-slot mouse positions spin it backward.
             InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, this.leftPos + 133, this.topPos + 75,
-                    30, this.leftPos + 133 - mouseX, this.topPos + 25 - mouseY, merchant);
+                    30, 0.0F, 0.0F, merchant);
         }
     }
 
