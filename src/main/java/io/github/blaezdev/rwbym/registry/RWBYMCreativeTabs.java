@@ -893,7 +893,10 @@ public final class RWBYMCreativeTabs {
         // Original Ragora fireball and entity* ids are projectile display items, not player-facing materials.
         net.minecraft.resources.ResourceLocation id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
         return id != null && RWBYM.MOD_ID.equals(id.getNamespace())
-                && (id.getPath().startsWith("entity") || id.getPath().equals("ragorafireball"));
+                && (id.getPath().startsWith("entity")
+                        || id.getPath().equals("ragorafireball")
+                        || isGeneratedPredicateVariant(id.getPath())
+                        || isKnownInternalModelItem(id.getPath()));
     }
 
     private static ItemStack stack(String name) {
@@ -906,7 +909,71 @@ public final class RWBYMCreativeTabs {
 
     private static boolean isOriginalHiddenFromCreative(String name) {
         // Original ids constructed with a null CreativeTabs parameter are internal morph, ammo, or debug helpers.
-        return ORIGINAL_HIDDEN_FROM_CREATIVE.contains(name);
+        return ORIGINAL_HIDDEN_FROM_CREATIVE.contains(name)
+                || isGeneratedPredicateVariant(name)
+                || isKnownInternalModelItem(name);
+    }
+
+    private static boolean isGeneratedPredicateVariant(String name) {
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Pull-frame models are item-property targets in 1.20.1, not separate creative-tab items like real weapons.
+        return hasPullFrameSuffix(name, "aquaealatlbow")
+                || hasPullFrameSuffix(name, "chatareusgun")
+                || hasPullFrameSuffix(name, "cinderbow")
+                || hasPullFrameSuffix(name, "cinderbowglass")
+                || hasPullFrameSuffix(name, "letztstil")
+                || hasPullFrameSuffix(name, "nebulabow")
+                || hasPullFrameSuffix(name, "pugzbow");
+    }
+
+    private static boolean hasPullFrameSuffix(String name, String base) {
+        if (!name.startsWith(base)) {
+            return false;
+        }
+        String suffix = name.substring(base.length());
+        return suffix.equals("1") || suffix.equals("125") || suffix.equals("150") || suffix.equals("175");
+    }
+
+    private static boolean isKnownInternalModelItem(String name) {
+        // Generated morph pieces and old render-only helpers are still registered so model predicates can reference them.
+        return name.equals("crescentscy")
+                || name.equals("crescentscyv")
+                || name.equals("croceaswd")
+                || name.equals("croceashld")
+                || name.equals("gambolswd")
+                || name.equals("gambolswdv")
+                || name.equals("gambolsheath")
+                || name.equals("gambolsheathv")
+                || name.equals("juaneshield")
+                || name.equals("kkiceshield")
+                || name.equals("lysetteshield")
+                || name.equals("myrteswd")
+                || name.equals("myrteswdv")
+                || name.equals("neoumb_open")
+                || name.equals("neoumb_open_blade")
+                || name.equals("pyrrhashield")
+                || name.equals("qrowscy")
+                || name.equals("scarletgun")
+                || name.equals("stormflower_vol7gun")
+                || name.equals("wattsshield")
+                || name.equals("p90_original")
+                || name.equals("lucidroseboardride")
+                || name.equals("kingfishercast")
+                || name.equals("gliderdeployed")
+                || name.equals("mondragonwclip")
+                || name.equals("extasisload")
+                || name.equals("lichtroze_open")
+                || name.equals("lichtroze_openfire")
+                || name.equals("lichtroze_openice")
+                || name.equals("lichtroze_openwind")
+                || name.equals("embermh")
+                || name.equals("embermhv")
+                || name.equals("emberoh")
+                || name.equals("emberohv")
+                || name.equals("ember2oh")
+                || name.equals("model")
+                || name.equals("inject")
+                || name.equals("injectg");
     }
 
     private RWBYMCreativeTabs() {

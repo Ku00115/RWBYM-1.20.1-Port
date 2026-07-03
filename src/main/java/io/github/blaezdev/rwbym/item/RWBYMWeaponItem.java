@@ -2190,7 +2190,9 @@ public class RWBYMWeaponItem extends Item {
     }
 
     private boolean isRanged() {
-        return hasProfileAmmo();
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy placeholder ammo only marks morph/blocking states; it must not make melee forms shoot or use bow poses.
+        return isSpecialMagazineGun() || RWBYMProjectileEntity.shouldUseProjectile(this.profile);
     }
 
     private boolean shouldFireVisibleProjectile() {
