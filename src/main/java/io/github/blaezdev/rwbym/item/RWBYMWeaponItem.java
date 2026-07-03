@@ -955,8 +955,6 @@ public class RWBYMWeaponItem extends Item {
         } else if ("fire".equals(element)) {
             player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 5));
             player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 5));
-        } else if ("ice".equals(element)) {
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0));
         } else if ("water".equals(element)) {
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 3));
         } else if ("wind".equals(element)) {
@@ -987,8 +985,6 @@ public class RWBYMWeaponItem extends Item {
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 5, true, false));
         } else if ("wind".equals(element)) {
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 7, true, false));
-        } else if ("ice".equals(element)) {
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 1, true, false));
         } else if ("grav".equals(element)) {
             player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 100, 0, true, false));
         }

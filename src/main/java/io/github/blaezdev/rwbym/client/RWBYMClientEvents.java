@@ -325,11 +325,13 @@ public final class RWBYMClientEvents {
     }
 
     private static boolean isOffhand(LivingEntity entity, ItemStack stack) {
-        return entity != null && entity.getOffhandItem().getItem() == stack.getItem();
+        // Match the rendered stack, not just the item id, so offhand override models cannot bleed into mainhand.
+        return entity != null && entity.getOffhandItem() == stack;
     }
 
     private static boolean isMainhand(LivingEntity entity, ItemStack stack) {
-        return entity != null && entity.getMainHandItem().getItem() == stack.getItem();
+        // Match the original 1.12 property behavior: predicates describe the exact stack being rendered.
+        return entity != null && entity.getMainHandItem() == stack;
     }
 
     private RWBYMClientEvents() {

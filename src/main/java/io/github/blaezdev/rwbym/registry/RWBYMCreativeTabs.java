@@ -635,6 +635,7 @@ public final class RWBYMCreativeTabs {
             "gwai5",
             "gwen",
             "hadesgun",
+            "hadesgunrecoil",
             "hadesscy",
             "hardlightmagazines",
             "hbangle",
