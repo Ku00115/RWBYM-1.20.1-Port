@@ -44,9 +44,10 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     }
 
     public void activate(ServerPlayer player) {
-        if (isActive() || this.level == null || this.level.getDifficulty().getId() == 0) {
+        if (isActive() || this.stopping || this.level == null || this.level.getDifficulty().getId() == 0) {
             return;
         }
+        // Reward ejection is a terminal phase in the original tile entity, so only a fresh inactive bait may start.
         this.playerId = player.getUUID();
         this.waveCount = 0;
         this.stopping = false;
@@ -57,7 +58,7 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     }
 
     public boolean isActive() {
-        return this.playerId != null || this.waveCount > 0 || this.stopping;
+        return this.waveCount > 0;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, GrimmBaitBlockEntity bait) {
@@ -102,7 +103,15 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         }
         ServerPlayer player = level.getServer().getPlayerList().getPlayer(this.playerId);
         pruneDeadEntities(level);
-        if (player == null || !player.isAlive() || isCleared()) {
+        if (player == null) {
+            // Original TileEntityRWBYGrimmBait reset silently when its owner reference disappeared.
+            this.waveCount = 0;
+            this.playerId = null;
+            this.currentWave.clear();
+            this.alive.clear();
+            return true;
+        }
+        if (!player.isAlive() || isCleared()) {
             beginStopping(level);
             return true;
         }
@@ -132,12 +141,15 @@ public class GrimmBaitBlockEntity extends BlockEntity {
     }
 
     private void beginStopping(ServerLevel level) {
+        int completedWaveCount = this.waveCount;
         this.stopping = true;
         this.playerId = null;
         this.currentWave.clear();
         this.alive.clear();
         this.rewards.clear();
-        buildRewards(level);
+        buildRewards(level, completedWaveCount);
+        // Original stop() queued rewards, then reset wavecount before the block ejected them.
+        this.waveCount = 0;
     }
 
     private void spawnWave(ServerLevel level, BlockPos pos) {
@@ -220,25 +232,27 @@ public class GrimmBaitBlockEntity extends BlockEntity {
         }
     }
 
-    private void buildRewards(ServerLevel level) {
-        if (this.waveCount == 17) {
+    private void buildRewards(ServerLevel level, int completedWaveCount) {
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy stop() used separate <17 and >17 branches; wave 17 intentionally queues no reward.
+        if (completedWaveCount == 17) {
             return;
         }
-        int commonCount = this.waveCount > 17 ? level.random.nextInt(100) + 5 : level.random.nextInt(20) + 5;
+        int commonCount = completedWaveCount > 17 ? level.random.nextInt(100) + 5 : level.random.nextInt(20) + 5;
         for (int i = 0; i < commonCount; i++) {
-            this.rewards.add(randomCommonReward(level));
+            this.rewards.add(randomCommonReward(level, completedWaveCount));
         }
-        if (this.waveCount > 17) {
+        if (completedWaveCount > 17) {
             this.rewards.add(randomRareReward(level));
         }
     }
 
-    private ItemStack randomCommonReward(ServerLevel level) {
+    private ItemStack randomCommonReward(ServerLevel level, int completedWaveCount) {
         List<ItemStack> choices = new ArrayList<>();
         addReward(choices, "lien50", level.random.nextInt(3) + 1);
         addReward(choices, "lien100", level.random.nextInt(3) + 1);
         addReward(choices, "remnants", level.random.nextInt(3) + 1);
-        if (this.waveCount > 17) {
+        if (completedWaveCount > 17) {
             addReward(choices, "lien500", 1);
             // Original reward id rwbyblock8 is the modern toolkit block item.
             addBlockReward(choices, "toolkit");

@@ -328,6 +328,8 @@ public class RWBYMArmorItem extends ArmorItem {
         }
 
         ItemStack weaponStack = new ItemStack(weapon);
+        // Weapon-store generated Kore Kosmou keeps modifier NBT here; see RWBYMWeaponModifierHelper.java.
+        weaponStack.setTag(armorStack.getTag() == null ? null : armorStack.getTag().copy());
         weaponStack.setDamageValue(Math.min(armorStack.getDamageValue(), weaponStack.getMaxDamage()));
         player.setItemInHand(InteractionHand.MAIN_HAND, weaponStack);
         armorStack.hurtAndBreak(30, player, wearer -> wearer.broadcastBreakEvent(EquipmentSlot.CHEST));

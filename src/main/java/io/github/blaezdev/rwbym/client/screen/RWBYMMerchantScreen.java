@@ -331,14 +331,15 @@ public class RWBYMMerchantScreen extends AbstractContainerScreen<RWBYMMerchantMe
     }
 
     private void selectOffer(int offerIndex) {
+        boolean changedOffer = this.selectedOffer != offerIndex;
         this.selectedOffer = offerIndex;
         MerchantOffer offer = this.menu.getOffers().get(offerIndex);
         this.menu.setSelectionHint(offerIndex);
         if (this.hasRecipeContents(offer)) {
             this.ghostOfferIndex = -1;
-            this.menu.tryMoveItems(offerIndex);
+            this.menu.prepareBookTrade(offerIndex, changedOffer);
             // Original GuiVillager mirrored recipe-button ingredient moves on the server with MessageTradingData.
-            RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(offerIndex, false, false));
+            RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(offerIndex, false, false, changedOffer));
         } else {
             this.ghostOfferIndex = offerIndex;
             if (this.hasPaymentSlotsContents()) {
@@ -353,11 +354,12 @@ public class RWBYMMerchantScreen extends AbstractContainerScreen<RWBYMMerchantMe
     }
 
     private void quickTradeOffer(int offerIndex, boolean tradeAll) {
+        boolean changedOffer = this.selectedOffer != offerIndex;
         this.selectedOffer = offerIndex;
         this.ghostOfferIndex = -1;
         this.menu.setSelectionHint(offerIndex);
-        // The server performs the result-slot take; the client only mirrors selection for immediate UI feedback.
-        RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(offerIndex, tradeAll));
+        // The server performs the result-slot take; the changed-offer flag mirrors GuiVillager's clear parameter.
+        RWBYMNetwork.CHANNEL.sendToServer(new MerchantTradeActionPacket(offerIndex, tradeAll, true, changedOffer));
     }
 
     private void renderGhostTrade(GuiGraphics graphics) {

@@ -105,7 +105,13 @@ public class CrusherMenu extends AbstractContainerMenu {
                     if (!moveItemStackTo(stack, CrusherBlockEntity.TOOL_SLOT, CrusherBlockEntity.TOOL_SLOT + 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (!moveItemStackTo(stack, CrusherBlockEntity.INPUT_SLOT, CrusherBlockEntity.INPUT_SLOT + 1, false)) {
+                } else if (canShiftMoveToInput(stack)) {
+                    // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+                    // Original transferStackInSlot only pushed recipe candidates into the Crusher input side.
+                    if (!moveItemStackTo(stack, CrusherBlockEntity.INPUT_SLOT, CrusherBlockEntity.INPUT_SLOT + 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
                     return ItemStack.EMPTY;
                 }
             } else if (!moveItemStackTo(stack, 4, 40, false)) {
@@ -129,6 +135,13 @@ public class CrusherMenu extends AbstractContainerMenu {
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
         // CrusherBlockEntity mirrors the legacy distance-and-tile check; NULL access would skip that world position.
         return this.container.stillValid(player);
+    }
+
+    private boolean canShiftMoveToInput(ItemStack stack) {
+        if (this.container instanceof CrusherBlockEntity crusher) {
+            return crusher.canProcessInput(stack);
+        }
+        return this.container.canPlaceItem(CrusherBlockEntity.INPUT_SLOT, stack);
     }
 
     private static Container crusherContainer(Inventory inventory, BlockPos pos) {

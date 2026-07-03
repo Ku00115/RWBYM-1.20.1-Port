@@ -13,19 +13,25 @@ import net.minecraftforge.network.NetworkEvent;
  * and {@code RWBYMMerchantEntity.java}.</p>
  */
 // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll, boolean takeResult) {
+public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll, boolean takeResult, boolean clearSlots) {
     public MerchantTradeActionPacket(int offerIndex, boolean tradeAll) {
-        this(offerIndex, tradeAll, true);
+        this(offerIndex, tradeAll, true, true);
+    }
+
+    public MerchantTradeActionPacket(int offerIndex, boolean tradeAll, boolean takeResult) {
+        this(offerIndex, tradeAll, takeResult, true);
     }
 
     public static void encode(MerchantTradeActionPacket packet, FriendlyByteBuf buffer) {
         buffer.writeVarInt(packet.offerIndex);
         buffer.writeBoolean(packet.tradeAll);
         buffer.writeBoolean(packet.takeResult);
+        buffer.writeBoolean(packet.clearSlots);
     }
 
     public static MerchantTradeActionPacket decode(FriendlyByteBuf buffer) {
-        return new MerchantTradeActionPacket(buffer.readVarInt(), buffer.readBoolean(), buffer.readBoolean());
+        return new MerchantTradeActionPacket(buffer.readVarInt(), buffer.readBoolean(), buffer.readBoolean(),
+                buffer.readBoolean());
     }
 
     public static void handle(MerchantTradeActionPacket packet, Supplier<NetworkEvent.Context> context) {
@@ -40,9 +46,9 @@ public record MerchantTradeActionPacket(int offerIndex, boolean tradeAll, boolea
                 return;
             }
             if (packet.takeResult) {
-                merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll);
+                merchantMenu.performBookTrade(player, packet.offerIndex, packet.tradeAll, packet.clearSlots);
             } else {
-                merchantMenu.prepareBookTrade(packet.offerIndex);
+                merchantMenu.prepareBookTrade(packet.offerIndex, packet.clearSlots);
             }
         });
         context.get().setPacketHandled(true);

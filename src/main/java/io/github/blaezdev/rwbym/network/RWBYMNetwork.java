@@ -24,7 +24,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
  * {@code ScrollAuraLevelPacket.java}, and {@code ScrollTeamActionPacket.java}.</p>
  */
 public final class RWBYMNetwork {
-    private static final String PROTOCOL = "1";
+    private static final String PROTOCOL = "2";
     private static int packetId;
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(

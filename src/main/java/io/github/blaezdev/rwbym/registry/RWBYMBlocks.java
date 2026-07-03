@@ -4,12 +4,12 @@ import io.github.blaezdev.rwbym.RWBYM;
 import io.github.blaezdev.rwbym.block.CrusherBlock;
 import io.github.blaezdev.rwbym.block.DustOreBlock;
 import io.github.blaezdev.rwbym.block.GrimmFluidBlock;
+import io.github.blaezdev.rwbym.block.HardlightFenceBlock;
 import io.github.blaezdev.rwbym.block.RWBYMInteractiveBlock;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -97,7 +97,7 @@ public final class RWBYMBlocks {
 
     private static Block createBlock(String name) {
         if ("hrdltfence".equals(name)) {
-            return new FenceBlock(stoneProperties(name));
+            return new HardlightFenceBlock(stoneProperties(name));
         }
         if ("crusher".equals(name)) {
             return new CrusherBlock(stoneProperties(name));
@@ -219,7 +219,8 @@ public final class RWBYMBlocks {
                 || "bait".equals(name)
                 || "crusher".equals(name)
                 || "toolkit".equals(name)
-                || "lantern".equals(name);
+                || "lantern".equals(name)
+                || "hrdltfence".equals(name);
     }
 
     private static boolean isDustOre(String name) {

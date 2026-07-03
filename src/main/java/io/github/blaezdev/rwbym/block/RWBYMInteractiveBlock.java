@@ -36,10 +36,17 @@ public class RWBYMInteractiveBlock extends Block implements EntityBlock {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
         if (level.isClientSide()) {
+            if ("bait".equals(this.name) && level.getDifficulty().getId() == 0) {
+                return InteractionResult.PASS;
+            }
+            if ("toolkit".equals(this.name)) {
+                ItemStack stack = player.getMainHandItem();
+                return !stack.isEmpty() && stack.isDamaged() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            }
             return InteractionResult.SUCCESS;
         }
         return switch (this.name) {
-            case "toolkit" -> repairHeldItem(level, pos, player, hand);
+            case "toolkit" -> repairHeldItem(level, pos, player);
             case "bait" -> activateBait(level, pos, player);
             case "crusher" -> openCrusher(level, pos, player);
             default -> InteractionResult.PASS;
@@ -71,10 +78,11 @@ public class RWBYMInteractiveBlock extends Block implements EntityBlock {
         return null;
     }
 
-    private InteractionResult repairHeldItem(Level level, BlockPos pos, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+    private InteractionResult repairHeldItem(Level level, BlockPos pos, Player player) {
+        // Original RWBYToolkit repaired the selected hotbar item rather than the offhand interaction stack.
+        ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty() || !stack.isDamaged()) {
-            return InteractionResult.CONSUME;
+            return InteractionResult.PASS;
         }
         stack.setDamageValue(0);
         // Original RWBYToolkit always charged five levels after a successful repair.
@@ -86,7 +94,7 @@ public class RWBYMInteractiveBlock extends Block implements EntityBlock {
 
     private InteractionResult activateBait(Level level, BlockPos pos, Player player) {
         if (!(level instanceof ServerLevel) || level.getDifficulty().getId() == 0) {
-            return InteractionResult.CONSUME;
+            return InteractionResult.PASS;
         }
         if (level.getBlockEntity(pos) instanceof GrimmBaitBlockEntity bait && player instanceof ServerPlayer serverPlayer) {
             bait.activate(serverPlayer);

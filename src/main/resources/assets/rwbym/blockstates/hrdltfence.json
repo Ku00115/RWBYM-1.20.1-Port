@@ -1,45 +1,113 @@
 {
   "multipart": [
     {
+      "when": {
+        "post": "true",
+        "top": "false"
+      },
       "apply": {
         "model": "rwbym:block/hrdltfence_post"
       }
     },
     {
       "when": {
+        "post": "true",
+        "top": "true"
+      },
+      "apply": {
+        "model": "rwbym:block/hrdltfence_top"
+      }
+    },
+    {
+      "when": {
+        "post": "false",
+        "top": "false",
         "north": "true"
       },
       "apply": {
-        "model": "rwbym:block/hrdltfence_side",
+        "model": "rwbym:block/hrdltfence_side_bottom",
         "uvlock": true
       }
     },
     {
       "when": {
+        "post": "false",
+        "top": "false",
         "east": "true"
       },
       "apply": {
-        "model": "rwbym:block/hrdltfence_side",
+        "model": "rwbym:block/hrdltfence_side_bottom",
         "y": 90,
         "uvlock": true
       }
     },
     {
       "when": {
+        "post": "false",
+        "top": "false",
         "south": "true"
       },
       "apply": {
-        "model": "rwbym:block/hrdltfence_side",
+        "model": "rwbym:block/hrdltfence_side_bottom",
         "y": 180,
         "uvlock": true
       }
     },
     {
       "when": {
+        "post": "false",
+        "top": "false",
         "west": "true"
       },
       "apply": {
-        "model": "rwbym:block/hrdltfence_side",
+        "model": "rwbym:block/hrdltfence_side_bottom",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "post": "false",
+        "top": "true",
+        "north": "true"
+      },
+      "apply": {
+        "model": "rwbym:block/hrdltfence_side_top",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "post": "false",
+        "top": "true",
+        "east": "true"
+      },
+      "apply": {
+        "model": "rwbym:block/hrdltfence_side_top",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "post": "false",
+        "top": "true",
+        "south": "true"
+      },
+      "apply": {
+        "model": "rwbym:block/hrdltfence_side_top",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "post": "false",
+        "top": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "rwbym:block/hrdltfence_side_top",
         "y": 270,
         "uvlock": true
       }

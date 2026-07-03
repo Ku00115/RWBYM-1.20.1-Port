@@ -12,7 +12,7 @@ public class WeaponModifierEnchantment extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack stack) {
-        return stack.getItem() instanceof RWBYMWeaponItem || stack.getItem() instanceof BasicGunItem;
+        return RWBYMWeaponModifierHelper.supportsDefaultModifiers(stack);
     }
 
     @Override

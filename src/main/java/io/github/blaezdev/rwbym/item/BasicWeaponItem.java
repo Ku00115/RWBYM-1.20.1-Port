@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import io.github.blaezdev.rwbym.capability.RWBYMCapabilities;
 import io.github.blaezdev.rwbym.entity.BasicGrimmEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -32,8 +33,13 @@ public class BasicWeaponItem extends Item {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (!attacker.level().isClientSide() && target instanceof BasicGrimmEntity && target.isDeadOrDying()) {
-            attacker.getCapability(RWBYMCapabilities.AURA).ifPresent(aura -> aura.addAmount(4.0F));
+        if (!attacker.level().isClientSide()) {
+            if (attacker instanceof Player player) {
+                RWBYMWeaponModifierHelper.applyKillModifierEffects(stack, player, target);
+            }
+            if (target instanceof BasicGrimmEntity && target.isDeadOrDying()) {
+                attacker.getCapability(RWBYMCapabilities.AURA).ifPresent(aura -> aura.addAmount(4.0F));
+            }
         }
         return super.hurtEnemy(stack, target, attacker);
     }

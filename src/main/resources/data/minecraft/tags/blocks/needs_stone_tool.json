@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "rwbym:crusher",
+    "rwbym:fireore",
+    "rwbym:gravityore",
+    "rwbym:iceore",
+    "rwbym:impureore",
+    "rwbym:lightore",
+    "rwbym:smrgrave",
+    "rwbym:waterore",
+    "rwbym:windore"
+  ]
+}

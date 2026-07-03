@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,9 +56,15 @@ public class RWBYMContainerItem extends Item {
                         @Override
                         public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player menuPlayer) {
                             StoredContainer container = new StoredContainer(stack, slots, acceptedItems);
+                            // Original wallet/pouch GUI used the dispenser 3x3 layout; only the 54-slot crate used chest rows.
                             return slots > 9
                                     ? new ChestMenu(MenuType.GENERIC_9x6, containerId, inventory, container, 6)
-                                    : new ChestMenu(MenuType.GENERIC_9x1, containerId, inventory, container, 1);
+                                    : new DispenserMenu(containerId, inventory, container) {
+                                        @Override
+                                        public boolean stillValid(Player player) {
+                                            return player.getMainHandItem() == stack || player.getOffhandItem() == stack;
+                                        }
+                                    };
                         }
                     });
         }

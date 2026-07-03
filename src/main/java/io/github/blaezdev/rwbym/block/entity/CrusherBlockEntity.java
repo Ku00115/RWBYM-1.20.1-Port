@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -193,7 +194,10 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
 
     @Override
     public void clearContent() {
-        this.items.clear();
+        for (int slot = 0; slot < this.items.size(); slot++) {
+            this.items.set(slot, ItemStack.EMPTY);
+        }
+        setChanged();
     }
 
     @Override
@@ -229,13 +233,27 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         };
     }
 
+    public boolean canProcessInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        ItemStack tool = this.items.get(TOOL_SLOT);
+        if (isCrusherTool(tool)) {
+            return !this.crushedResult(stack, tool).isEmpty();
+        }
+        // Shift-click cannot know the future tool yet, so only route items present in the legacy/data recipe keys.
+        return legacyCrushRecipes().containsKey(stack.getItem()) || legacyChiselRecipes().containsKey(stack.getItem())
+                || hasCrusherRecipeForAnyTool(stack, this.level);
+    }
+
     private boolean canProcess() {
         ItemStack result = this.crushedResult(this.items.get(INPUT_SLOT), this.items.get(TOOL_SLOT));
         if (result.isEmpty()) {
             return false;
         }
         ItemStack output = this.items.get(OUTPUT_SLOT);
-        return output.isEmpty() || ItemStack.isSameItemSameTags(output, result)
+        // Original canSmelt only compared item identity; datapack-added output tags should not block stacking.
+        return output.isEmpty() || ItemStack.isSameItem(output, result)
                 && output.getCount() + result.getCount() <= output.getMaxStackSize();
     }
 
@@ -296,7 +314,8 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         if (item == net.minecraft.world.item.Items.LAVA_BUCKET) {
             return 20000;
         }
-        return net.minecraftforge.common.ForgeHooks.getBurnTime(stack, null);
+        // Original crusher fell back to the furnace fuel registry after its manual values.
+        return net.minecraftforge.common.ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
     }
 
     private static ItemStack legacyCrushedResult(ItemStack input, ItemStack tool) {
@@ -363,6 +382,23 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         return Map.copyOf(recipes);
     }
 
+    private static boolean hasCrusherRecipeForAnyTool(ItemStack input, @Nullable Level level) {
+        if (level == null) {
+            return false;
+        }
+        RegistryObject<Item> crush = RWBYMItems.SIMPLE_ITEMS.get("crush");
+        RegistryObject<Item> chisel = RWBYMItems.SIMPLE_ITEMS.get("chisel");
+        if (crush != null && hasCrusherRecipe(level, input, new ItemStack(crush.get()))) {
+            return true;
+        }
+        return chisel != null && hasCrusherRecipe(level, input, new ItemStack(chisel.get()));
+    }
+
+    private static boolean hasCrusherRecipe(Level level, ItemStack input, ItemStack tool) {
+        SimpleContainer recipeInput = new SimpleContainer(input, tool);
+        return level.getRecipeManager().getRecipeFor(RWBYMRecipeTypes.CRUSHER.get(), recipeInput, level).isPresent();
+    }
+
     private static void addRecipe(Map<Item, ItemStack> recipes, String inputName, String outputName, int outputCount) {
         RegistryObject<Item> input = RWBYMItems.SIMPLE_ITEMS.get(inputName);
         RegistryObject<Item> output = RWBYMItems.SIMPLE_ITEMS.get(outputName);
@@ -380,6 +416,9 @@ public class CrusherBlockEntity extends BlockEntity implements WorldlyContainer,
         if (stack.isEmpty()) {
             return "";
         }
-        return net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
+        net.minecraft.resources.ResourceLocation key =
+                net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem());
+        // Registry lookups should normally exist, but this keeps automation/recipe probes from crashing on bad stacks.
+        return key == null ? "" : key.getPath();
     }
 }

@@ -85,7 +85,11 @@ public final class RWBYMWeaponModifierHelper {
     }
 
     public static boolean supportsDefaultModifiers(ItemStack stack) {
-        return stack.getItem() instanceof RWBYMWeaponItem || stack.getItem() instanceof BasicGunItem;
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy merchant generation enchanted every weapon-like stack, including simple fallback weapons.
+        return stack.getItem() instanceof RWBYMWeaponItem
+                || stack.getItem() instanceof BasicWeaponItem
+                || isLegacyKoreKosmouModifierCarrier(stack);
     }
 
     public static void applyKillModifierEffects(ItemStack stack, Player player, LivingEntity target) {
@@ -127,6 +131,11 @@ public final class RWBYMWeaponModifierHelper {
         tag.putBoolean("AuraOn", auraOn);
         tag.putBoolean("AuraON", auraOn);
         stack.setTag(tag);
+    }
+
+    private static boolean isLegacyKoreKosmouModifierCarrier(ItemStack stack) {
+        var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return id != null && "rwbym".equals(id.getNamespace()) && id.getPath().startsWith("korekosmou");
     }
 
     private static void enchantRandomModifier(ItemStack stack, List<String> modifierIds, RandomSource random) {

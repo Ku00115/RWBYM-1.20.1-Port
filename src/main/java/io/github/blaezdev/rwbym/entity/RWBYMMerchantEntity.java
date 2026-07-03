@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -66,6 +67,7 @@ public class RWBYMMerchantEntity extends AbstractVillager {
         if (this.getNavigation() instanceof GroundPathNavigation groundNavigation) {
             groundNavigation.setCanOpenDoors(true);
         }
+        equipBlackStoreMask();
     }
 
     @Override
@@ -89,11 +91,8 @@ public class RWBYMMerchantEntity extends AbstractVillager {
         if (this.level().isClientSide()) {
             return;
         }
-        if (this.tickCount == 1 && merchantKind().equals("blackstore")) {
-            ItemStack mask = itemStack("whtefng", 1);
-            if (!mask.isEmpty()) {
-                this.setItemSlot(EquipmentSlot.HEAD, mask);
-            }
+        if (this.tickCount == 1) {
+            equipBlackStoreMask();
         }
         for (Monster monster : this.level().getEntitiesOfClass(Monster.class, this.getBoundingBox().inflate(60.0D))) {
             if (monster.getTarget() == this) {
@@ -460,13 +459,19 @@ public class RWBYMMerchantEntity extends AbstractVillager {
                 "adamv6_legs", "neo_chest", "neo_legs", "oscarv4_chest", "oscarv4_legs", "oscarv6_chest",
                 "oscarv6_legs", "ozma1_chest", "ozma1_legs", "ozma2_chest", "ozma2_legs", "ozma3_chest",
                 "ozma3_legs", "pennyv7_chest", "pennyv7_legs", "pennyv7_head", "rvnmask", "whtefng", "mariaeyes",
-                "mariamask", "ozpinglasses", "maria_chest", "maria_legs", "henchmenhat", "henchmenhatglasses",
-                "henchman_chest", "henchman_legs", "taylor_head", "taylorhood", "taylor_chest", "taylor_legs",
+                "mariamask", "ozpinglasses"
+        }) {
+            addPoolTrade(armorPool, "lien50", 3, armorItem, 1);
+        }
+        // Original armorstore keeps scroll in the random pool before the later Maria/Henchmen/Taylor outfit rows.
+        addPoolTrade(armorPool, "lien100", 4, "scroll", 1);
+        for (String armorItem : new String[] {
+                "maria_chest", "maria_legs", "henchmenhat", "henchmenhatglasses", "henchman_chest",
+                "henchman_legs", "taylor_head", "taylorhood", "taylor_chest", "taylor_legs",
                 "sasha_chest", "sasha_legs", "dianna_chest", "dianna_legs", "bailey_chest", "bailey_legs"
         }) {
             addPoolTrade(armorPool, "lien50", 3, armorItem, 1);
         }
-        addPoolTrade(armorPool, "lien100", 4, "scroll", 1);
         for (String premiumArmor : new String[] {
                 "antimagic_mask", "rimuru_chest", "rimuru_legs", "rubyv7_chest", "rubyv7_legs", "yangv7_chest",
                 "yangv7_legs", "blakev7_chest", "blakev7_legs", "weissv7_chest", "weissv7_legs"
@@ -561,12 +566,15 @@ public class RWBYMMerchantEntity extends AbstractVillager {
             return;
         }
         int targetCount = Math.min(originalCount, offerPool.size());
-        int nextRandom = this.random.nextInt(offerPool.size());
+        // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
+        // Legacy weaponstore/armorstore created a fresh Random whenever their trade list was repopulated.
+        RandomSource tradeRandom = RandomSource.create();
+        int nextRandom = tradeRandom.nextInt(offerPool.size());
         Set<Integer> selected = new HashSet<>();
         selected.add(nextRandom);
         for (int i = 1; i < targetCount; i++) {
             while (selected.contains(nextRandom)) {
-                nextRandom = this.random.nextInt(offerPool.size());
+                nextRandom = tradeRandom.nextInt(offerPool.size());
             }
             selected.add(nextRandom);
         }
@@ -623,5 +631,15 @@ public class RWBYMMerchantEntity extends AbstractVillager {
             this.cachedKind = EntityType.getKey(this.getType()).getPath();
         }
         return this.cachedKind;
+    }
+
+    private void equipBlackStoreMask() {
+        if (!merchantKind().equals("blackstore") || !this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+            return;
+        }
+        ItemStack mask = itemStack("whtefng", 1);
+        if (!mask.isEmpty()) {
+            this.setItemSlot(EquipmentSlot.HEAD, mask);
+        }
     }
 }
