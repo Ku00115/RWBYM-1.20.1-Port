@@ -426,13 +426,36 @@ public class RWBYMProjectileEntity extends ThrowableItemProjectile {
 
     public static boolean shouldUseProjectile(RWBYMWeaponProfiles.WeaponProfile profile) {
         // AI generated port code for 1.20.1 Forge, original logic reference Blaez_Dev source
-        // The 1.12 RWBYGun path spawned EntityBullet for regular ammo; only modern special guns stay hitscan.
+        // The 1.12 RWBYGun path only reached shooting when findAmmo found a real ammo item; nuller/nullest were
+        // placeholder melee ammo ids and must not make sword or knife forms fire in creative mode.
         return profile.hasType(RWBYMWeaponProfiles.THROWN)
                 || profile.hasType(RWBYMWeaponProfiles.BOOMERANG)
                 || profile.hasType(RWBYMWeaponProfiles.ROCKET)
                 || profile.hasType(RWBYMWeaponProfiles.BOW)
                 || profile.name().contains("boomerang")
                 || profile.name().contains("rocket")
-                || (profile.ammo() != null && !profile.ammo().isBlank());
+                || hasRealProjectileAmmo(profile.ammo());
+    }
+
+    private static boolean hasRealProjectileAmmo(String ammoIds) {
+        if (ammoIds == null || ammoIds.isBlank()) {
+            return false;
+        }
+        for (String rawId : ammoIds.split(",")) {
+            String id = rawId.trim();
+            int colon = id.indexOf(':');
+            String path = colon >= 0 ? id.substring(colon + 1) : id;
+            if (!id.isBlank() && !isLegacyPlaceholderAmmo(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isLegacyPlaceholderAmmo(String path) {
+        return path.equals("none")
+                || path.equals("nuller")
+                || path.equals("nullest")
+                || path.equals("nulls");
     }
 }
